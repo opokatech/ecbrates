@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <cstring>
 #include <sstream>
 
@@ -124,14 +123,9 @@ namespace MO
             base = base_str;
         }
 
-        Utils::uppercase(base);
-
         Symbols symbols;
         if (symbols_set)
         {
-            std::transform(symbols_str, symbols_str + strlen(symbols_str), symbols_str,
-                           [](char c) { return std::toupper(c); });
-
             symbols = Utils::split(symbols_str, ',');
         }
 
@@ -217,7 +211,7 @@ namespace MO
         else
         {
             ans["success"]  = true;
-            ans["base"]     = a_result.base;
+            ans["base"]     = a_result.base.c_str();
             ans["date"]     = a_result.timepoint.get();
             ans["rates"]    = Json::Value();
             auto &ans_rates = ans["rates"]; // alias

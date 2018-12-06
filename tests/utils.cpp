@@ -3,11 +3,12 @@
 
 #include "gtest/gtest.h"
 
+#include "Symbol.hpp"
 #include "Utils.hpp"
 
 TEST(Utils, SplitString)
 {
-    std::vector<std::string> out;
+    MO::Symbols out;
 
     out = MO::Utils::split("", ' ');
     ASSERT_EQ(out.size(), 0);
@@ -28,21 +29,4 @@ TEST(Utils, SplitString)
     ASSERT_EQ(out[0], "usd");
     ASSERT_EQ(out[1], "eur");
     ASSERT_EQ(out[2], "pln");
-}
-
-TEST(Utils, Uppercase)
-{
-    std::string s;
-
-    s = "abc";
-    ASSERT_EQ(MO::Utils::uppercase(s), "ABC");
-
-    s = "";
-    ASSERT_EQ(MO::Utils::uppercase(s), "");
-
-    s = "123";
-    ASSERT_EQ(MO::Utils::uppercase(s), "123");
-
-    s = "AbC";
-    ASSERT_EQ(MO::Utils::uppercase(s), "ABC");
 }

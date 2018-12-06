@@ -8,6 +8,7 @@
 #include "Exceptions.hpp"
 #include "Logging.hpp"
 #include "Server.hpp"
+#include "Version.hpp"
 
 volatile std::sig_atomic_t keep_running = 1;
 
@@ -15,7 +16,8 @@ void sig_handler(int) { keep_running = 0; }
 
 int main(int argc, char *argv[])
 {
-    cxxopts::Options opts("ecbrates", "Daemon for serving currency rates, version: TODO");
+    cxxopts::Options opts("ecbrates", "Daemon for serving currency rates, version: " + MO::Version::HASH +
+                                          ", date: " + MO::Version::DATE);
 
     opts.add_options()(MO::OPT::HELP, "Show help")
 

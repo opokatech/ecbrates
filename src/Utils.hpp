@@ -1,17 +1,15 @@
 #pragma once
 
 #include <string>
-#include <string_view>
 #include <vector>
+
+#include "Symbol.hpp"
 
 namespace MO
 {
     namespace Utils
     {
         /// Split given string using given delimiter.
-        std::vector<std::string> split(const std::string &a_string, char a_delimiter);
-
-        /// Makes string uppercase in place.
-        std::string &uppercase(std::string &a_string);
+        std::vector<Symbol> split(const std::string &a_string, char a_delimiter);
     } // namespace Utils
 } // namespace MO

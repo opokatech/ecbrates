@@ -18,6 +18,10 @@ namespace MO
     public:
         using Timepoint_Prices = std::pair<Timepoint, Prices>;
 
+        Ecb() = default;
+        Ecb(const Data_Source_File &a_data) { Load(a_data); }
+        Ecb(const Data_Source_Url &a_data) { Load(a_data); }
+
         /// Load data from a file.
         void Load(const Data_Source_File &a_filename) { load_file(a_filename); }
 
@@ -37,9 +41,6 @@ namespace MO
             std::scoped_lock lock(m_mutex);
             return m_data.size();
         }
-
-        /// Gets single rate
-        double Rate(const Timepoint &a_tp, const Symbol &a_target, const Symbol &a_base = DEFAULT_CURRENCY) const;
 
         /// Get full result set for the latest data.
         Result Get_Latest(std::optional<std::vector<Symbol>>, std::optional<Symbol>) const;

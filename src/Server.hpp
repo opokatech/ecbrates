@@ -58,8 +58,8 @@ namespace MO
         /// Outputs result.
         void print_result(struct mg_connection *a_conn, const Result &);
 
-        struct mg_server *m_server = nullptr;
         const Ecb &m_ecb;
+        struct mg_server *m_server        = nullptr;
         uint16_t m_port                   = 0;
         bool m_running                    = false;
         Json::StreamWriter *m_json_writer = nullptr;

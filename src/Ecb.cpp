@@ -13,56 +13,6 @@
 
 namespace MO
 {
-    double Ecb::Rate(const Timepoint &a_tp, const Symbol &a_target, const Symbol &a_base) const
-    {
-        std::scoped_lock lock(m_mutex);
-
-        const auto &tp_data_it = m_data.find(a_tp);
-
-        if (tp_data_it == m_data.end())
-        {
-            throw MO::Exception::Timepoint_Not_Found(__func__);
-        }
-
-        const auto &tp_data = tp_data_it->second;
-
-        const auto &target_rate_it = tp_data.find(a_target);
-        if (target_rate_it == tp_data.end())
-        {
-            throw MO::Exception::Target_Currency_Not_Found(__func__);
-        }
-
-        const auto &target_rate = target_rate_it->second;
-
-        if (a_base == MO::DEFAULT_CURRENCY)
-        {
-            return target_rate;
-        }
-        else // different base currency
-        {
-            // special case - no need to calculate
-            if (a_target == a_base)
-            {
-                return 1;
-            }
-
-            const auto &base_rate_it = tp_data.find(a_base);
-            if (base_rate_it == tp_data.end())
-            {
-                throw MO::Exception::Base_Currency_Not_Found(__func__);
-            }
-            const auto &base_rate = base_rate_it->second;
-
-            if (base_rate == 0.0)
-            {
-                throw MO::Exception::Invalid_Base_Rate(__func__);
-            }
-            return target_rate / base_rate;
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
     Result Ecb::Get_Latest(std::optional<std::vector<Symbol>> a_symbols, std::optional<Symbol> a_base) const
     {
         const auto last_dt = m_data.rbegin();
@@ -99,7 +49,7 @@ namespace MO
     {
         std::scoped_lock lock(m_mutex);
 
-        const std::string &base            = a_base.value_or(DEFAULT_CURRENCY);
+        const Symbol &base                 = a_base.value_or(DEFAULT_CURRENCY);
         const std::vector<Symbol> &symbols = a_symbols.value_or(std::vector<Symbol>{});
 
         Result res(a_historical);
@@ -116,6 +66,12 @@ namespace MO
             {
                 for (const auto &sym : symbols)
                 {
+                    if (sym == base)
+                    {
+                        ret_prices[base] = 1.0;
+                        continue;
+                    }
+
                     if (const auto tp_prices_it = tp_prices.find(sym); tp_prices_it != tp_prices.end())
                     {
                         ret_prices[tp_prices_it->first] = tp_prices_it->second;
@@ -155,6 +111,12 @@ namespace MO
             {
                 for (const auto &sym : symbols)
                 {
+                    if (sym == base)
+                    {
+                        ret_prices[base] = 1.0;
+                        continue;
+                    }
+
                     if (sym == DEFAULT_CURRENCY)
                     {
                         ret_prices[sym] = 1.0 / base_in_eur;

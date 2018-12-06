@@ -44,11 +44,28 @@ SET(ecb_sources
 )
 
 # ==================================================================================================================== #
+# git stuff
+FIND_PACKAGE(Git)
+
+IF(GIT_EXECUTABLE)
+    EXECUTE_PROCESS(COMMAND "${GIT_EXECUTABLE}" describe --always --abbrev=20 --dirty
+                    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+                    OUTPUT_VARIABLE GIT_HASH
+                    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+    EXECUTE_PROCESS(COMMAND "${GIT_EXECUTABLE}" log -1 --format=%ad --date=iso
+                    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+                    OUTPUT_VARIABLE GIT_DATE
+                    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+ENDIF()
+
+# ==================================================================================================================== #
 
 ADD_LIBRARY(ecb_lib ${ecb_sources})
 TARGET_LINK_LIBRARIES(ecb_lib ${EXTERNALS_LIBRARIES})
 
-ADD_EXECUTABLE(ecbrates src/main.cpp)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/Version.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/Version.cpp)
+
+ADD_EXECUTABLE(ecbrates src/main.cpp "${CMAKE_CURRENT_BINARY_DIR}/Version.cpp")
 TARGET_LINK_LIBRARIES(ecbrates ecb_lib)
 
 ADD_CUSTOM_TARGET(strip

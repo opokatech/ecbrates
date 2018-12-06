@@ -1,134 +1,207 @@
-#include <functional>
-#include <string>
-#include <vector>
-
 #include "gtest/gtest.h"
 
 #include "Ecb.hpp"
 #include "Error.hpp"
-#include "Exceptions.hpp"
 #include "Symbol.hpp"
-#include "test_utils.hpp"
+
+using namespace MO;
+
+static const char *DAILY = "data/daily.xml";
+static const char *HIST  = "data/hist.xml";
 
 TEST(EcbBasic, LoadingFiles)
 {
-    MO::Ecb ecb;
-
+    Ecb ecb;
     EXPECT_EQ(ecb.Get_Timepoint_Count(), 0);
 
-    ecb.Load(MO::Data_Source_File{"data/daily.xml"});
+    ecb.Load(Data_Source_File{"whatever"});
+    EXPECT_EQ(ecb.Get_Timepoint_Count(), 0);
+
+    ecb.Load(Data_Source_File{DAILY});
     EXPECT_EQ(ecb.Get_Timepoint_Count(), 1);
 
     ecb.Clear();
     EXPECT_EQ(ecb.Get_Timepoint_Count(), 0);
 
-    ecb.Load(MO::Data_Source_File{"data/hist.xml"});
+    ecb.Load(Data_Source_File{HIST});
     EXPECT_EQ(ecb.Get_Timepoint_Count(), 5101);
 
-    ecb.Load(MO::Data_Source_File{"data/daily.xml"});
+    ecb.Load(Data_Source_File{DAILY});
     EXPECT_EQ(ecb.Get_Timepoint_Count(), 5102);
 }
 
-TEST(EcbBasic, SimpleConversions)
+TEST(EcbBasic, Latest_No_Base_No_Symbols_But_No_Data_Loaded)
 {
-    using namespace MO;
-
     Ecb ecb;
+    auto r = ecb.Get_Latest({}, {});
 
-    ecb.Load(MO::Data_Source_File{"data/hist.xml"});
-
-    EXPECT_DOUBLE_EQ(1.1296, ecb.Rate(Timepoint{"2018-11-14"}, Symbol{"USD"}));
-    EXPECT_DOUBLE_EQ(1, ecb.Rate(Timepoint{"2018-11-14"}, Symbol{"USD"}, Symbol{"USD"}));
-
-    EXPECT_DOUBLE_EQ(128.64, ecb.Rate(Timepoint{"2018-11-14"}, Symbol{"JPY"}));
-    EXPECT_DOUBLE_EQ(4.2911, ecb.Rate(Timepoint{"2018-11-14"}, Symbol{"PLN"}));
-
-    // value of PLN in USD
-    EXPECT_DOUBLE_EQ(4.2911 / 1.1296, ecb.Rate(Timepoint{"2018-11-14"}, Symbol{"PLN"}, Symbol{"USD"}));
+    EXPECT_EQ(r.error, Error::NOT_FOUND);
 }
 
-TEST(EcbBasic, Latest_Simple)
+TEST(EcbBasic, Latest_No_Base_No_Symbols)
 {
-    using namespace MO;
-
-    Ecb ecb;
+    Ecb ecb{Data_Source_File{DAILY}};
 
     auto r = ecb.Get_Latest({}, {});
-    EXPECT_EQ(r.error, MO::Error::NOT_FOUND);
+    EXPECT_EQ(r.error, Error::OK);
 
-    ecb.Load(MO::Data_Source_File{"data/daily.xml"});
-
-    r = ecb.Get_Latest({}, {});
-    EXPECT_EQ(r.error, MO::Error::OK);
-
-    EXPECT_EQ(r.timepoint, MO::Timepoint("2018-12-03"));
-    EXPECT_NE(r.timepoint, MO::Timepoint("2018-12-15"));
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
+    EXPECT_NE(r.timepoint, Timepoint("2018-12-15"));
 
     EXPECT_EQ(r.prices.size(), 32); // we have so many currencies there
     EXPECT_DOUBLE_EQ(r.prices.at("USD"), 1.1332);
     EXPECT_EQ(r.prices.find("EUR"), r.prices.end()); // we should not have base currency in return
 }
 
-TEST(EcbBasic, Latest_Base)
+TEST(EcbBasic, Latest_Default_Base_Uppercase_No_Symbols)
 {
-    using namespace MO;
+    Ecb ecb{Data_Source_File{DAILY}};
 
-    Ecb ecb;
+    auto r = ecb.Get_Latest({}, {"EUR"});
+    EXPECT_EQ(r.error, Error::OK);
 
-    ecb.Load(MO::Data_Source_File{"data/daily.xml"});
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
+    EXPECT_NE(r.timepoint, Timepoint("2018-12-15"));
 
-    // bad base currency
+    EXPECT_EQ(r.prices.size(), 32); // we have so many currencies there
+    EXPECT_DOUBLE_EQ(r.prices.at("USD"), 1.1332);
+    EXPECT_EQ(r.prices.find("EUR"), r.prices.end()); // we should not have base currency in return
+}
+
+TEST(EcbBasic, Latest_Default_Base_Lowercase_No_Symbols)
+{
+    Ecb ecb{Data_Source_File{DAILY}};
+
+    auto r = ecb.Get_Latest({}, {"eur"});
+    EXPECT_EQ(r.error, Error::OK);
+
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
+    EXPECT_NE(r.timepoint, Timepoint("2018-12-15"));
+
+    EXPECT_EQ(r.prices.size(), 32); // we have so many currencies there
+    EXPECT_DOUBLE_EQ(r.prices.at("USD"), 1.1332);
+    EXPECT_EQ(r.prices.find("EUR"), r.prices.end()); // we should not have base currency in return
+}
+
+TEST(EcbBasic, Latest_Default_Base_And_Base_As_The_Only_Symbol)
+{
+    Ecb ecb{Data_Source_File{DAILY}};
+
+    auto r = ecb.Get_Latest(Symbols{"eur"}, {});
+    EXPECT_EQ(r.error, Error::OK);
+
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
+
+    EXPECT_EQ(r.prices.size(), 1); // we have so many currencies there
+    EXPECT_DOUBLE_EQ(r.prices.at("EUR"), 1);
+}
+
+TEST(EcbBasic, Latest_Invalid_Base_No_Symbols)
+{
+    Ecb ecb{Data_Source_File{DAILY}};
+
     auto r = ecb.Get_Latest({}, {"BLABLA"});
-    EXPECT_EQ(r.error, MO::Error::INVALID_BASE);
+    EXPECT_EQ(r.error, Error::INVALID_BASE);
+}
 
-    // good base currency
-    r = ecb.Get_Latest({}, {"USD"});
-    EXPECT_EQ(r.error, MO::Error::OK);
+TEST(EcbBasic, Latest_Invalid_Base_Some_Symbols)
+{
+    Ecb ecb{Data_Source_File{DAILY}};
 
-    EXPECT_EQ(r.timepoint, MO::Timepoint("2018-12-03"));
+    auto r = ecb.Get_Latest(Symbols{"USD"}, {"BLABLA"});
+    EXPECT_EQ(r.error, Error::INVALID_BASE);
+}
+
+TEST(EcbBasic, Latest_Other_Base_Uppercase_No_Symbols)
+{
+    Ecb ecb{Data_Source_File{DAILY}};
+
+    auto r = ecb.Get_Latest({}, {"USD"});
+    EXPECT_EQ(r.error, Error::OK);
+
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
 
     EXPECT_EQ(r.prices.size(), 32); // we have so many currencies there
     EXPECT_NEAR(r.prices.at("EUR"), 0.882456, 0.0001);
     ASSERT_EQ(r.prices.find("USD"), r.prices.end()); // we should not have base currency in return
 }
 
-TEST(EcbBasic, Latest_Several_Symbols)
+TEST(EcbBasic, Latest_Other_Base_Lowercase_No_Symbols)
 {
-    using namespace MO;
+    Ecb ecb{Data_Source_File{DAILY}};
 
-    Ecb ecb;
+    auto r = ecb.Get_Latest({}, {"usd"});
+    EXPECT_EQ(r.error, Error::OK);
 
-    ecb.Load(MO::Data_Source_File{"data/daily.xml"});
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
+
+    EXPECT_EQ(r.prices.size(), 32); // we have so many currencies there
+    EXPECT_NEAR(r.prices.at("EUR"), 0.882456, 0.0001);
+    ASSERT_EQ(r.prices.find("USD"), r.prices.end()); // we should not have base currency in return
+}
+
+TEST(EcbBasic, Latest_Other_Base_Own_Symbol_Only)
+{
+    Ecb ecb(Data_Source_File{DAILY});
+
+    // good symbols
+    auto r = ecb.Get_Latest(Symbols{"USD"}, "USD");
+    EXPECT_EQ(r.error, Error::OK);
+
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
+
+    EXPECT_EQ(r.prices.size(), 1);
+    EXPECT_NEAR(r.prices.at("usd"), 1, 0.0001);
+}
+
+TEST(EcbBasic, Latest_Other_Base_Few_Valid_Symbols)
+{
+    Ecb ecb(Data_Source_File{DAILY});
 
     // good symbols
     auto r = ecb.Get_Latest(Symbols{"PLN", "GBP", "EUR"}, "USD");
-    EXPECT_EQ(r.error, MO::Error::OK);
+    EXPECT_EQ(r.error, Error::OK);
 
-    EXPECT_EQ(r.timepoint, MO::Timepoint("2018-12-03"));
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
 
-    EXPECT_EQ(r.prices.size(), 3); // we have so many currencies there
+    EXPECT_EQ(r.prices.size(), 3);
     EXPECT_NEAR(r.prices.at("PLN"), 3.7777, 0.0001);
     EXPECT_NEAR(r.prices.at("GBP"), 0.7868, 0.0001);
     EXPECT_NEAR(r.prices.at("EUR"), 0.8825, 0.0001);
+}
 
-    // bad symbols
-    r = ecb.Get_Latest(Symbols{"PLN", "GBP", "bla bla"}, "USD");
-    EXPECT_EQ(r.error, MO::Error::INVALID_SYMBOL);
+TEST(EcbBasic, Latest_Other_Base_Some_Valid_And_Invalid_Symbols)
+{
+    Ecb ecb(Data_Source_File{DAILY});
+    auto r = ecb.Get_Latest(Symbols{"PLN", "GBP", "bla bla"}, "USD");
+    EXPECT_EQ(r.error, Error::INVALID_SYMBOL);
+}
+
+TEST(EcbBasic, Latest_Other_Base_Few_Valid_Lowecase_Symbols)
+{
+    Ecb ecb(Data_Source_File{DAILY});
+
+    // good symbols
+    auto r = ecb.Get_Latest(Symbols{"pln", "gbp", "eur"}, "USD");
+    EXPECT_EQ(r.error, Error::OK);
+
+    EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
+
+    EXPECT_EQ(r.prices.size(), 3);
+    EXPECT_NEAR(r.prices.at("PLN"), 3.7777, 0.0001);
+    EXPECT_NEAR(r.prices.at("GBP"), 0.7868, 0.0001);
+    EXPECT_NEAR(r.prices.at("EUR"), 0.8825, 0.0001);
 }
 
 TEST(EcbBasic, Historical_Several_Symbols)
 {
-    using namespace MO;
-
-    Ecb ecb;
-
-    ecb.Load(MO::Data_Source_File{"data/hist.xml"});
+    Ecb ecb(Data_Source_File{HIST});
 
     // good symbols
     auto r = ecb.Get_Historical(Timepoint{"2018-11-14"}, Symbols{"PLN", "GBP", "EUR"}, "USD");
-    EXPECT_EQ(r.error, MO::Error::OK);
+    EXPECT_EQ(r.error, Error::OK);
 
-    EXPECT_EQ(r.timepoint, MO::Timepoint("2018-11-14"));
+    EXPECT_EQ(r.timepoint, Timepoint("2018-11-14"));
 
     EXPECT_EQ(r.prices.size(), 3); // we have so many currencies there
     EXPECT_NEAR(r.prices.at("PLN"), 3.7987, 0.0001);
@@ -137,24 +210,5 @@ TEST(EcbBasic, Historical_Several_Symbols)
 
     // bad symbols
     r = ecb.Get_Latest(Symbols{"PLN", "GBP", "bla bla"}, "USD");
-    EXPECT_EQ(r.error, MO::Error::INVALID_SYMBOL);
-}
-
-TEST(EcbBasic, InvalidConversions)
-{
-    using namespace MO;
-
-    Ecb ecb;
-
-    ecb.Load(MO::Data_Source_File{"data/daily.xml"});
-
-    MO::test_exception<Exception::Bad_Timepoint>([&]() { ecb.Rate(Timepoint{"whatever"}, Symbol{"USD"}); });
-
-    MO::test_exception<Exception::Timepoint_Not_Found>([&]() { ecb.Rate(Timepoint{"1234-12-12"}, Symbol{"USD"}); });
-
-    MO::test_exception<Exception::Target_Currency_Not_Found>(
-        [&]() { ecb.Rate(Timepoint{"2018-12-03"}, Symbol{"BLABLA"}); });
-
-    MO::test_exception<Exception::Base_Currency_Not_Found>(
-        [&]() { ecb.Rate(Timepoint{"2018-12-03"}, Symbol{"PLN"}, Symbol{"ABC"}); });
+    EXPECT_EQ(r.error, Error::INVALID_SYMBOL);
 }
