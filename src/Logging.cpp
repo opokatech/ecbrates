@@ -15,7 +15,7 @@ namespace MO
         vprintf(a_format, args);
         va_end(args);
 #else
-        [[maybe_used]] a_format; // instead of: (void)a_format; // don't warn about unused variable
+        (void)a_format; // don't warn about unused variable
 #endif
     }
 

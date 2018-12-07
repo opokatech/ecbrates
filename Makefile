@@ -1,4 +1,4 @@
-I386_DIR=build_i386
+BUILD_DIR=build
 RELEASE_SUFFIX=_release
 DEBUG_SUFFIX=_debug
 
@@ -8,19 +8,22 @@ MAKEFLAGS+= --no-print-directory
 help:
 	@echo "Targets:"
 	@echo ""
-	@echo "i386       : Release build for gnu i386"
-	@echo "i386-debug : BUild with debug output for gnu i386"
+	@echo "release : compile with optimizations and without debug logging"
+	@echo "debug   : compile without optimizations and with debug logging"
 
-build:
+_build:
 	rm -rf ${BUILD_DIR}
 	mkdir ${BUILD_DIR}
 
 	cd ${BUILD_DIR}; \
 	cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DECB_BUILD_TESTS=${TESTS} ..; \
 	${MAKE}
+	# used for vim plugin YouCompleteMe
+	rm -f compile_commands.json
+	ln -s ${BUILD_DIR}/compile_commands.json
 
 clean:
-	rm -rf ${I386_DIR}*
+	rm -rf ${BUILD_DIR}*
 
 ctags:
 	(cd src && ctags -R . ../externals)
@@ -31,12 +34,12 @@ clang-format:
 cleanctags:
 	find -type f -name tags -exec rm -f {} \;
 
-.PHONY:i386
-i386:
-	${MAKE} BUILD_DIR=${I386_DIR}${RELEASE_SUFFIX} BUILD_TYPE=Release TESTS=ON build
-	${MAKE} -C ${I386_DIR}${RELEASE_SUFFIX} strip
+.PHONY:release
+release:
+	${MAKE} BUILD_DIR=${BUILD_DIR}${RELEASE_SUFFIX} BUILD_TYPE=Release TESTS=ON _build
+	${MAKE} -C ${BUILD_DIR}${RELEASE_SUFFIX} strip
 
-.PHONY:i386-debug
-i386-debug:
-	${MAKE} BUILD_DIR=${I386_DIR}${DEBUG_SUFFIX} BUILD_TYPE=Debug TESTS=ON build
+.PHONY:debug
+debug:
+	${MAKE} BUILD_DIR=${BUILD_DIR}${DEBUG_SUFFIX} BUILD_TYPE=Debug TESTS=ON _build
 
