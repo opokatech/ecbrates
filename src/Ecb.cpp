@@ -10,6 +10,7 @@
 #include "Logging.hpp"
 #include "Symbol.hpp"
 #include "Timepoint.hpp"
+#include "Utils.hpp"
 
 namespace MO
 {
@@ -49,8 +50,13 @@ namespace MO
     {
         std::scoped_lock lock(m_mutex);
 
-        const Symbol &base                 = a_base.value_or(DEFAULT_CURRENCY);
-        const std::vector<Symbol> &symbols = a_symbols.value_or(std::vector<Symbol>{});
+        Symbol base                 = a_base.value_or(DEFAULT_CURRENCY);
+        std::vector<Symbol> symbols = a_symbols.value_or(std::vector<Symbol>{});
+
+        // uppercase base
+        Utils::uppercase(base);
+        // uppercase all given symbols
+        std::for_each(symbols.begin(), symbols.end(), Utils::uppercase);
 
         Result res(a_historical);
         res.timepoint = a_tpd.first; // save timepoint

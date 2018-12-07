@@ -144,14 +144,13 @@ TEST(EcbBasic, Latest_Other_Base_Own_Symbol_Only)
 {
     Ecb ecb(Data_Source_File{DAILY});
 
-    // good symbols
     auto r = ecb.Get_Latest(Symbols{"USD"}, "USD");
     EXPECT_EQ(r.error, Error::OK);
 
     EXPECT_EQ(r.timepoint, Timepoint("2018-12-03"));
 
     EXPECT_EQ(r.prices.size(), 1);
-    EXPECT_NEAR(r.prices.at("usd"), 1, 0.0001);
+    EXPECT_NEAR(r.prices.at("USD"), 1, 0.0001);
 }
 
 TEST(EcbBasic, Latest_Other_Base_Few_Valid_Symbols)
