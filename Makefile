@@ -12,18 +12,22 @@ help:
 	@echo "debug   : compile without optimizations and with debug logging"
 
 _build:
-	rm -rf ${BUILD_DIR}
-	mkdir ${BUILD_DIR}
+	@if [ ! -d ${BUILD_DIR} ] ; \
+	then \
+		mkdir ${BUILD_DIR}; \
+		cd ${BUILD_DIR}; \
+		cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DECB_BUILD_TESTS=${TESTS} ..; \
+		${MAKE}; \
+	else \
+		cd ${BUILD_DIR}; \
+		${MAKE}; \
+	fi
 
-	cd ${BUILD_DIR}; \
-	cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DECB_BUILD_TESTS=${TESTS} ..; \
-	${MAKE}
-	# used for vim plugin YouCompleteMe
-	rm -f compile_commands.json
-	ln -s ${BUILD_DIR}/compile_commands.json
+	@rm -f compile_commands.json
+	@ln -s ${BUILD_DIR}/compile_commands.json
 
 clean:
-	rm -rf ${BUILD_DIR}*
+	rm -rf ${BUILD_DIR}* compile_commands.json
 
 ctags:
 	(cd src && ctags -R . ../externals)
