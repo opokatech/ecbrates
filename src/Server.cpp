@@ -22,7 +22,7 @@ namespace MO
         sb.settings_["precision"]     = 6;
         sb.settings_["precisionType"] = "decimal";
 
-        m_json_writer = sb.newStreamWriter();
+        m_json_writer.reset(sb.newStreamWriter());
 
         // create http server
         create();

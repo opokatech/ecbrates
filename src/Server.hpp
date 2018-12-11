@@ -1,17 +1,14 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "mongoose.h"
+#include "json/json.h"
 
 #include "Symbol.hpp"
 
 // ---------------------------------------------------------------------------------------------------------------------
-
-namespace Json
-{
-    class StreamWriter;
-}
 
 namespace MO
 {
@@ -59,9 +56,9 @@ namespace MO
         void print_result(struct mg_connection *a_conn, const Result &);
 
         const Ecb &m_ecb;
-        struct mg_server *m_server        = nullptr;
-        uint16_t m_port                   = 0;
-        bool m_running                    = false;
-        Json::StreamWriter *m_json_writer = nullptr;
+        std::unique_ptr<Json::StreamWriter> m_json_writer;
+        struct mg_server *m_server = nullptr;
+        uint16_t m_port            = 0;
+        bool m_running             = false;
     };
 } // namespace MO
