@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
     opts.add_options()(MO::OPT::HELP, "Show help")
 
         // initialize with a file
-        (MO::OPT::XML_FILE, "XML file with data", cxxopts::value<std::string>())
+        (MO::OPT::XML_FILE, "Preload with XML file", cxxopts::value<std::string>())
         // initialize from url
-        (MO::OPT::XML_URL, "URL for fetching current data in XML format", cxxopts::value<std::string>())
+        (MO::OPT::XML_URL, "Preload with XML data from given URL", cxxopts::value<std::string>())
 
             (MO::OPT::PORT, "HTTP port to listen on", cxxopts::value<uint16_t>())
         // keep updating latest data
