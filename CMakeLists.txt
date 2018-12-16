@@ -3,6 +3,7 @@ PROJECT(ecbrates)
 
 # ==================================================================================================================== #
 OPTION(ECB_BUILD_TESTS "Build with tests" OFF)
+OPTION(ECB_STATIC_BUILD "Use static linking" OFF)
 
 # ==================================================================================================================== #
 
@@ -10,6 +11,13 @@ OPTION(ECB_BUILD_TESTS "Build with tests" OFF)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -pipe")
 SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 SET(CMAKE_CXX_FLAGS_RELEASE "-O2")
+
+IF(ECB_STATIC_BUILD)
+    SET(CMAKE_EXE_LINKER_FLAGS "-static")
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    SET(OPENSSL_USE_STATIC_LIBS TRUE)
+    MESSAGE(STATUS "Building statically")
+ENDIF()
 
 SET(CMAKE_EXPORT_COMPILE_COMMANDS True)
 
@@ -51,6 +59,7 @@ ADD_CUSTOM_TARGET(strip
     )
 
 if (ECB_BUILD_TESTS)
+    MESSAGE(STATUS "Building with tests")
     FILE(GLOB TEST_SOURCES tests/*.cpp)
 
     ADD_SUBDIRECTORY(externals/googletest)
