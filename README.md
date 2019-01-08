@@ -15,9 +15,10 @@ git submodule update --init --recursive # to get all submodules
 make release
 ```
 
-Run it:
+Run it from build\_release... directory:
 ```
-./build_release/bin/ecbrates -p 8080
+cd build_release.....
+./bin/ecbrates -p 8080
 ```
 
 It will fetch historical data from the ECB and start listening on given ports. Only 2 types of requests are accepted:
@@ -54,4 +55,18 @@ curl localhost:8080/api/latest
 	"success" : true
 }
 ```
+
+## Crosscompiling for arm
+
+It is possible to cross compile it for some powerful enough arm devices like RaspberryPi. Assuming you have Debian OS
+just install `g++-arm-linux-gnueabihf`, `qemu-user` and `libssl-dev:armhf` (notice it is taken from armhf architecture
+which you must enable first using `dpkg --add-architecture`). A few words of explanation: we install
+`g++-arm-linux-gnueabihf` for obvious reason. The `qemu-user` is needed for compiling libcurl or precisely for running
+its tests/checks before compilation (see Makefile for options passed to cmake). And finally `libssl-dev:armhf` is needed
+to link statically with.
+
+When crosscompiling is used (i.e. you specify some ARMCPU option - see Makefile for details) then you will a statically
+compiled binary with no tests.
+
+
 

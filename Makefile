@@ -2,8 +2,9 @@ BUILD_DIR=build
 RELEASE_SUFFIX=_release
 DEBUG_SUFFIX=_debug
 
-ECB_TESTS ?= OFF
-ECB_STATIC ?= OFF
+ARMCPU ?= none
+TESTS ?= 0
+STATIC ?= 0
 
 MAKEFLAGS+= --no-print-directory
 
@@ -15,18 +16,34 @@ help:
 	@echo " debug      : compile without optimizations and with debug logging"
 	@echo ""
 	@echo "Options:"
-	@echo " ECB_TESTS  : [ON|OFF] build google tests, default OFF"
-	@echo " ECB_STATIC : [ON|OFF] links statically, default OFF"
+	@echo " ARMCPU : set this for crosscompile for armhf (only). If set it implies STATIC and NO TESTS"
+	@echo "          Needed debian packagees: g++-arm-linux-gnueabihf, libssl-dev:armhf, qemu-user"
+	@echo "          Examples:"
+	@echo "          RaspberryPi3 - cortex-a53"
+	@echo "          BananPiPro   - cortex-a7"
+	@echo " TESTS  : 0|1 build google tests, default 0"
+	@echo " STATIC : 0|1 links statically, default 0"
 
 _build:
 	@if [ ! -d ${BUILD_DIR} ] ; \
 	then \
 		mkdir ${BUILD_DIR}; \
 		cd ${BUILD_DIR}; \
-		cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-              -DECB_BUILD_TESTS=${ECB_TESTS} \
-              -DECB_STATIC_BUILD=${ECB_STATIC} \
-              ..; \
+		if [ "x${ARMCPU}" != "xnone" ]; \
+	    then \
+			cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+			      -DECB_ARMCPU=${ARMCPU} \
+				  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake \
+				  -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-arm \
+				  -DECB_BUILD_TESTS=OFF \
+				  -DECB_STATIC_BUILD=ON \
+				  ..; \
+		else \
+			cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+				  -DECB_BUILD_TESTS=${TESTS} \
+				  -DECB_STATIC_BUILD=${STATIC} \
+				  ..; \
+		fi; \
 		${MAKE}; \
 	else \
 		cd ${BUILD_DIR}; \
@@ -50,9 +67,9 @@ cleanctags:
 
 .PHONY:release
 release:
-	${MAKE} BUILD_DIR=${BUILD_DIR}${RELEASE_SUFFIX}_tests_${ECB_TESTS}_static_${ECB_STATIC} BUILD_TYPE=Release _build
-	${MAKE} -C ${BUILD_DIR}${RELEASE_SUFFIX} strip
+	${MAKE} BUILD_DIR=${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} BUILD_TYPE=Release _build
+	${MAKE} -C ${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} strip
 
 .PHONY:debug
 debug:
-	${MAKE} BUILD_DIR=${BUILD_DIR}${DEBUG_SUFFIX}_tests_${ECB_TESTS}_static_${ECB_STATIC} BUILD_TYPE=Debug _build
+	${MAKE} BUILD_DIR=${BUILD_DIR}${DEBUG_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} BUILD_TYPE=Debug _build
