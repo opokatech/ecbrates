@@ -25,33 +25,25 @@ help:
 	@echo " STATIC : 0|1 links statically, default 0"
 
 _build:
-	@if [ ! -d ${BUILD_DIR} ] ; \
+	@if [ "x${ARMCPU}" != "xnone" ]; \
 	then \
-		mkdir ${BUILD_DIR}; \
-		cd ${BUILD_DIR}; \
-		if [ "x${ARMCPU}" != "xnone" ]; \
-	    then \
-			cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-			      -DECB_ARMCPU=${ARMCPU} \
-				  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake \
-				  -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-arm \
-				  -DECB_BUILD_TESTS=OFF \
-				  -DECB_STATIC_BUILD=ON \
-				  ..; \
-		else \
-			cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-				  -DECB_BUILD_TESTS=${TESTS} \
-				  -DECB_STATIC_BUILD=${STATIC} \
-				  ..; \
-		fi; \
-		${MAKE}; \
+		cmake -S . -B ${BUILD_DIR} -G Ninja \
+			  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+			  -DECB_ARMCPU=${ARMCPU} \
+			  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake \
+			  -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-arm \
+			  -DECB_BUILD_TESTS=OFF \
+			  -DECB_STATIC_BUILD=ON; \
+		cmake --build ${BUILD_DIR}; \
 	else \
-		cd ${BUILD_DIR}; \
-		${MAKE}; \
-	fi
-
-	@rm -f compile_commands.json
-	@ln -s ${BUILD_DIR}/compile_commands.json
+		cmake -S . -B ${BUILD_DIR} -G Ninja \
+			  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+			  -DECB_BUILD_TESTS=${TESTS} \
+			  -DECB_STATIC_BUILD=${STATIC}; \
+		cmake --build ${BUILD_DIR}; \
+		rm -f compile_commands.json; \
+	    ln -s ${BUILD_DIR}/compile_commands.json; \
+	fi 
 
 clean:
 	rm -rf ${BUILD_DIR}* compile_commands.json
