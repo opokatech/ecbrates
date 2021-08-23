@@ -1,73 +1,81 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.8)
-PROJECT(ecbrates)
+cmake_minimum_required(VERSION 3.8)
+project(ecbrates)
 
-# ==================================================================================================================== #
-OPTION(ECB_BUILD_TESTS "Build with tests" OFF)
-OPTION(ECB_STATIC_BUILD "Use static linking" OFF)
+# ====================================================================================================================
+# #
+option(ECB_BUILD_TESTS "Build with tests" OFF)
+option(ECB_STATIC_BUILD "Use static linking" OFF)
 
-# ==================================================================================================================== #
+# ====================================================================================================================
+# #
 
 # default flags
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -pipe")
-SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
-SET(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -pipe")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
-IF(ECB_STATIC_BUILD)
-    SET(CMAKE_EXE_LINKER_FLAGS "-static")
-    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-    SET(OPENSSL_USE_STATIC_LIBS TRUE)
-    MESSAGE(STATUS "Building statically")
-ENDIF()
+if(ECB_STATIC_BUILD)
+    set(CMAKE_EXE_LINKER_FLAGS "-static")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    set(OPENSSL_USE_STATIC_LIBS TRUE)
+    message(STATUS "Building statically")
+endif()
 
-SET(CMAKE_EXPORT_COMPILE_COMMANDS True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 
-IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    ADD_COMPILE_DEFINITIONS(DEBUG)
-ENDIF()
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_definitions(DEBUG)
+endif()
 
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
-SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY lib)
 
-ADD_SUBDIRECTORY(externals)
-ADD_SUBDIRECTORY(src)
-
+add_subdirectory(externals)
+add_subdirectory(src)
 
 # git stuff
-FIND_PACKAGE(Git)
+find_package(Git)
 
-IF(GIT_EXECUTABLE)
-    EXECUTE_PROCESS(COMMAND "${GIT_EXECUTABLE}" describe --always --abbrev=20 --dirty
+if(GIT_EXECUTABLE)
+    execute_process(
+        COMMAND "${GIT_EXECUTABLE}" describe --always --abbrev=20 --dirty
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
         OUTPUT_VARIABLE GIT_HASH
         ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    EXECUTE_PROCESS(COMMAND "${GIT_EXECUTABLE}" log -1 --format=%ad --date=iso
+    execute_process(
+        COMMAND "${GIT_EXECUTABLE}" log -1 --format=%ad --date=iso
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
         OUTPUT_VARIABLE GIT_DATE
         ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-ENDIF()
+endif()
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/Version.cpp.in ${CMAKE_BINARY_DIR}/Version.cpp)
+configure_file(${CMAKE_SOURCE_DIR}/src/Version.cpp.in ${CMAKE_BINARY_DIR}/Version.cpp)
 
-ADD_EXECUTABLE(ecbrates src/Main.cpp ${CMAKE_BINARY_DIR}/Version.cpp)
-TARGET_INCLUDE_DIRECTORIES(ecbrates PRIVATE src ${CXXOPTS_INCLUDE_DIRS} ${MONGOOSE_INCLUDE_DIRS} src)
-TARGET_LINK_LIBRARIES(ecbrates PRIVATE ecb_lib)
-SET_PROPERTY(TARGET ecbrates PROPERTY CXX_STANDARD 17)
+add_executable(ecbrates src/Main.cpp ${CMAKE_BINARY_DIR}/Version.cpp)
+target_include_directories(ecbrates PRIVATE src ${CXXOPTS_INCLUDE_DIRS} ${MONGOOSE_INCLUDE_DIRS}
+                                            src)
+target_link_libraries(ecbrates PRIVATE ecb_lib)
+set_property(TARGET ecbrates PROPERTY CXX_STANDARD 17)
 
-ADD_CUSTOM_TARGET(strip
+add_custom_target(
+    strip
     COMMAND ${COMPILER_PREFIX}strip ${CMAKE_BINARY_DIR}/bin/ecbrates
-    DEPENDS ecbrates
-    )
+    DEPENDS ecbrates)
 
-if (ECB_BUILD_TESTS)
-    MESSAGE(STATUS "Building with tests")
-    FILE(GLOB TEST_SOURCES tests/*.cpp)
+if(ECB_BUILD_TESTS)
+    message(STATUS "Building with tests")
+    file(GLOB TEST_SOURCES tests/*.cpp)
 
-    ADD_SUBDIRECTORY(externals/googletest)
+    add_subdirectory(externals/googletest)
 
-    ADD_EXECUTABLE(ecbrates_test ${TEST_SOURCES})
-    TARGET_LINK_LIBRARIES(ecbrates_test ecb_lib ${EXTERNALS_LIBRARIES} gtest_main)
-    TARGET_INCLUDE_DIRECTORIES(ecbrates_test PRIVATE src)
-    SET_PROPERTY(TARGET ecbrates_test PROPERTY CXX_STANDARD 17)
+    add_executable(ecbrates_test ${TEST_SOURCES})
+    target_link_libraries(ecbrates_test ecb_lib ${EXTERNALS_LIBRARIES} gtest_main)
+    target_include_directories(ecbrates_test PRIVATE src)
+    set_property(TARGET ecbrates_test PROPERTY CXX_STANDARD 17)
 
-    ADD_CUSTOM_COMMAND(TARGET ecbrates_test POST_BUILD COMMAND ecbrates_test WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
+    add_custom_command(
+        TARGET ecbrates_test
+        POST_BUILD
+        COMMAND ecbrates_test
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
 endif()
