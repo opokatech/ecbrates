@@ -48,20 +48,14 @@ _build:
 clean:
 	rm -rf ${BUILD_DIR}* compile_commands.json
 
-ctags:
-	(cd src && ctags -R . ../externals)
-
 clang-format:
 	clang-format -i src/*pp tests/*pp
 
-cleanctags:
-	find -type f -name tags -exec rm -f {} \;
-
 .PHONY:release
 release:
-	${MAKE} BUILD_DIR=${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} BUILD_TYPE=Release _build
-	cmake --build ${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} --target strip
+	${MAKE} BUILD_DIR=${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_static_${STATIC} BUILD_TYPE=Release _build
+	cmake --build ${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_static_${STATIC} --target strip
 
 .PHONY:debug
 debug:
-	${MAKE} BUILD_DIR=${BUILD_DIR}${DEBUG_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} BUILD_TYPE=Debug _build
+	${MAKE} BUILD_DIR=${BUILD_DIR}${DEBUG_SUFFIX}_arm_${ARMCPU}_static_${STATIC} BUILD_TYPE=Debug _build
