@@ -3,10 +3,14 @@ Language: Cpp
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
 AlignOperands: true
+AllowShortFunctionsOnASingleLine: Empty
+AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterClass: false
+  AfterCaseLabel:  true
+  AfterClass: true
   AfterControlStatement: true
   AfterEnum:       true
   AfterFunction:   true
@@ -23,9 +27,14 @@ BraceWrapping:
   SplitEmptyNamespace: true
 ColumnLimit:     120
 IndentWidth:     4
+# Before hash option was added in version 9
+IndentPPDirectives: BeforeHash
+IndentCaseLabels: true
+IndentPPDirectives: AfterHash
 NamespaceIndentation: All
 ObjCBlockIndentWidth: 4
-# SpaceBeforeInheritanceColon: true
+SpaceBeforeInheritanceColon: false
+SpaceBeforeRangeBasedForLoopColon: false
 Standard:        Cpp11
 TabWidth:        4
 UseTab:          Never
