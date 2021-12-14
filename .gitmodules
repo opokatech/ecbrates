@@ -10,9 +10,6 @@
 [submodule "externals/googletest"]
 	path = externals/googletest
 	url = https://github.com/google/googletest.git
-[submodule "externals/mongoose"]
-	path = externals/mongoose
-	url = https://github.com/whoshuu/mongoose.git
 [submodule "externals/jsoncpp"]
 	path = externals/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
