@@ -13,3 +13,6 @@
 [submodule "externals/jsoncpp"]
 	path = externals/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "externals/mongoose"]
+	path = externals/mongoose
+	url = https://github.com/opokatech/mongoose.git
