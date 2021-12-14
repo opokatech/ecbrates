@@ -1,7 +1,5 @@
 # CXXOPTS - header only library, so we export the include directory here
-set(CXXOPTS_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}/cxxopts/include
-    CACHE INTERNAL "")
+add_subdirectory(cxxopts)
 
 # PUGIXML - it shuold export include libs automatically
 add_subdirectory(pugixml)

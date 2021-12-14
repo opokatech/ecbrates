@@ -48,9 +48,8 @@ configure_file(${CMAKE_SOURCE_DIR}/src/Version.cpp.in ${CMAKE_BINARY_DIR}/Versio
 
 add_executable(ecbrates src/Main.cpp ${CMAKE_BINARY_DIR}/Version.cpp)
 # TODO should be removed and include dirs should be provide by those libs
-target_include_directories(ecbrates PRIVATE src ${CXXOPTS_INCLUDE_DIRS} ${MONGOOSE_INCLUDE_DIRS}
-                                            src)
-target_link_libraries(ecbrates PRIVATE ecb_lib)
+target_include_directories(ecbrates PRIVATE ${MONGOOSE_INCLUDE_DIRS})
+target_link_libraries(ecbrates PRIVATE ecb_lib cxxopts)
 set_property(TARGET ecbrates PROPERTY CXX_STANDARD 17)
 
 add_custom_target(
