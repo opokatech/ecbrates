@@ -1,13 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
-project(ecbrates)
+project(ecbrates VERSION 1.0.1)
 
-# ====================================================================================================================
-# #
 option(ECB_BUILD_TESTS "Build with tests" OFF)
 option(ECB_STATIC_BUILD "Use static linking" OFF)
-
-# ====================================================================================================================
-# #
 
 # default flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -pipe")
@@ -21,7 +16,7 @@ if(ECB_STATIC_BUILD)
     message(STATUS "Building statically")
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(DEBUG)
@@ -52,6 +47,7 @@ endif()
 configure_file(${CMAKE_SOURCE_DIR}/src/Version.cpp.in ${CMAKE_BINARY_DIR}/Version.cpp)
 
 add_executable(ecbrates src/Main.cpp ${CMAKE_BINARY_DIR}/Version.cpp)
+# TODO should be removed and include dirs should be provide by those libs
 target_include_directories(ecbrates PRIVATE src ${CXXOPTS_INCLUDE_DIRS} ${MONGOOSE_INCLUDE_DIRS}
                                             src)
 target_link_libraries(ecbrates PRIVATE ecb_lib)
@@ -70,7 +66,7 @@ if(ECB_BUILD_TESTS)
 
     add_executable(ecbrates_test ${TEST_SOURCES})
     target_link_libraries(ecbrates_test ecb_lib ${EXTERNALS_LIBRARIES} gtest_main)
-    target_include_directories(ecbrates_test PRIVATE src)
+    target_include_directories(ecbrates_test PRIVATE src) # TODO remove
     set_property(TARGET ecbrates_test PROPERTY CXX_STANDARD 17)
 
     add_custom_command(

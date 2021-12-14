@@ -60,7 +60,7 @@ cleanctags:
 .PHONY:release
 release:
 	${MAKE} BUILD_DIR=${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} BUILD_TYPE=Release _build
-	${MAKE} -C ${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} strip
+	cmake --build ${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} --target strip
 
 .PHONY:debug
 debug:
