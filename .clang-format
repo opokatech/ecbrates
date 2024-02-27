@@ -4,7 +4,7 @@ AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignOperands: true
 AllowShortFunctionsOnASingleLine: All
-AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakTemplateDeclarations: 'Yes'
 BasedOnStyle: LLVM
 BraceWrapping:
   AfterCaseLabel: true

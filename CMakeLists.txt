@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.8)
-project(ecbrates VERSION 1.0.1)
+cmake_minimum_required(VERSION 3.16)
+project(ecbrates VERSION 2.0.0)
 
 option(ECB_BUILD_TESTS "Build with tests" OFF)
 option(ECB_STATIC_BUILD "Use static linking" OFF)

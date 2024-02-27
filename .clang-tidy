@@ -1,4 +1,3 @@
----
 Checks:          '-checks=-*,bugprone-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,readability-*,
                   -cppcoreguidelines-avoid-c-arrays,
                   -cppcoreguidelines-avoid-do-while,

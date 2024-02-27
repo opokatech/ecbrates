@@ -1,10 +1,14 @@
 {
     "cSpell.words": [
+        "anyofallof",
         "armhf",
         "bugprone",
         "cppcoreguidelines",
         "dpkg",
         "gnueabihf",
-        "libcurl"
+        "libcurl",
+        "nodiscard",
+        "Struct",
+        "vararg"
     ]
 }
