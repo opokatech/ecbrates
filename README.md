@@ -1,8 +1,12 @@
 # ECB rates
 
-This is a http server which serves current and historical currently rates as JSON. Data is taken from [European Central Bank](https://www.ecb.europa.eu/stats/eurofxref/) and updated periodically.
+This repository hosts a few utility programs for handling historical currencies rates.
 
-It was written just for fun to test some C++ 17 features and libraries.
+One of them is a simple http server which serves data as JSON.
+Data is taken from [European Central Bank](https://www.ecb.europa.eu/stats/eurofxref/) and updated periodically.
+
+It was written just for fun to test some C++ 17 features and libraries back in 2018 and a updated
+a bit a of 2024.
 
 ## Quick start
 
@@ -15,7 +19,7 @@ git submodule update --init --recursive
 make release
 ```
 
-Run it from build\_release... directory:
+Run server:
 
 ```bash
 make run
