@@ -1,6 +1,3 @@
-[submodule "externals/cxxopts"]
-	path = externals/cxxopts
-	url = https://github.com/jarro2783/cxxopts
 [submodule "externals/pugixml"]
 	path = externals/pugixml
 	url = https://github.com/zeux/pugixml.git
