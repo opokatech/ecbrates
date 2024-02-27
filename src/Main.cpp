@@ -12,10 +12,7 @@
 
 volatile std::sig_atomic_t keep_running = 1;
 
-void sig_handler(int)
-{
-    keep_running = 0;
-}
+void sig_handler(int) { keep_running = 0; }
 
 int main(int argc, char *argv[])
 {
@@ -33,8 +30,8 @@ int main(int argc, char *argv[])
         // keep updating latest data
         ;
 
-    auto options   = opts.parse(argc, argv);
-    bool has_port  = options.count(MO::OPT_LONG::PORT);
+    auto options = opts.parse(argc, argv);
+    bool has_port = options.count(MO::OPT_LONG::PORT);
     bool show_help = options.count(MO::OPT_LONG::HELP);
 
     if (show_help || !has_port)
@@ -67,7 +64,7 @@ int main(int argc, char *argv[])
     if (has_port)
     {
         const auto &port_opt = options[MO::OPT_LONG::PORT];
-        uint16_t port        = port_opt.as<uint16_t>();
+        uint16_t port = port_opt.as<uint16_t>();
 
         if (port < MO::OPT::PORT_MIN)
         {
@@ -93,7 +90,7 @@ int main(int argc, char *argv[])
             server.Stop();
         });
 
-        auto last_time    = std::chrono::system_clock::now();
+        auto last_time = std::chrono::system_clock::now();
         auto update_delay = std::chrono::hours{1};
 
         // this thread will periodically fetch more data

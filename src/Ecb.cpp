@@ -50,7 +50,7 @@ namespace MO
     {
         std::scoped_lock lock(m_mutex);
 
-        Symbol base                 = a_base.value_or(DEFAULT_CURRENCY);
+        Symbol base = a_base.value_or(DEFAULT_CURRENCY);
         std::vector<Symbol> symbols = a_symbols.value_or(std::vector<Symbol>{});
 
         // uppercase base
@@ -60,9 +60,9 @@ namespace MO
 
         Result res(a_historical);
         res.timepoint = a_tpd.first; // save timepoint
-        res.base      = base;
+        res.base = base;
 
-        auto &ret_prices      = res.prices;   // alias of target container
+        auto &ret_prices = res.prices;        // alias of target container
         const auto &tp_prices = a_tpd.second; // alias of source container
 
         // check if given symbols are in the set
@@ -235,7 +235,7 @@ namespace MO
                 if (strcmp(sym_node.name(), CUBE) == 0)
                 {
                     auto symbol = Symbol{sym_node.attribute(CURRENCY).as_string()};
-                    auto rate   = sym_node.attribute(RATE).as_double();
+                    auto rate = sym_node.attribute(RATE).as_double();
 
                     prices[symbol] = rate;
                 }

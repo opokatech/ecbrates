@@ -1,10 +1,10 @@
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: true
+AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignOperands: true
-AllowShortFunctionsOnASingleLine: Empty
-AlwaysBreakTemplateDeclarations: 'Yes'
+AllowShortFunctionsOnASingleLine: All
+AlwaysBreakTemplateDeclarations: Yes
 BasedOnStyle: LLVM
 BraceWrapping:
   AfterCaseLabel: true
@@ -26,7 +26,6 @@ BraceWrapping:
 BreakBeforeBraces: Custom
 ColumnLimit: 120
 IndentCaseLabels: true
-# Before hash option was added in version 9
 IndentPPDirectives: BeforeHash
 IndentWidth: 4
 Language: Cpp
@@ -34,6 +33,6 @@ NamespaceIndentation: All
 ObjCBlockIndentWidth: 4
 SpaceBeforeInheritanceColon: false
 SpaceBeforeRangeBasedForLoopColon: false
-Standard: Cpp11
+Standard: c++17
 TabWidth: 4
 UseTab: Never

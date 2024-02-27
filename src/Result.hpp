@@ -16,7 +16,7 @@ namespace MO
         Symbol base;
         Prices prices;
 
-        bool historical   = false;
+        bool historical = false;
         Error::TYPE error = Error::OK;
     };
 } // namespace MO

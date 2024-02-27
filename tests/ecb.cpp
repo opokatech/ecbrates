@@ -7,7 +7,7 @@
 using namespace MO;
 
 static const char *DAILY = "data/daily.xml";
-static const char *HIST  = "data/hist.xml";
+static const char *HIST = "data/hist.xml";
 
 TEST(EcbBasic, LoadingFiles)
 {

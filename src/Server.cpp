@@ -18,8 +18,8 @@ namespace MO
         Json::StreamWriterBuilder sb;
 
         sb.setDefaults(&sb.settings_);
-        sb.settings_["commentStyle"]  = "None";
-        sb.settings_["precision"]     = 6;
+        sb.settings_["commentStyle"] = "None";
+        sb.settings_["precision"] = 6;
         sb.settings_["precisionType"] = "decimal";
 
         m_json_writer.reset(sb.newStreamWriter());
@@ -54,7 +54,7 @@ namespace MO
             port_string << m_port;
 
             // Create and configure the server
-            m_server        = mg_create_server(this, handler);
+            m_server = mg_create_server(this, handler);
             const char *err = mg_set_option(m_server, "listening_port", port_string.str().c_str());
 
             if (err)
@@ -114,7 +114,7 @@ namespace MO
         bool base_set = false, symbols_set = false;
 
         // Get form variables
-        base_set    = (mg_get_var(a_conn, "base", base_str, sizeof(base_str)) > 0);
+        base_set = (mg_get_var(a_conn, "base", base_str, sizeof(base_str)) > 0);
         symbols_set = (mg_get_var(a_conn, "symbols", symbols_str, sizeof(symbols_str)) > 0);
 
         Symbol base = DEFAULT_CURRENCY;
@@ -139,7 +139,7 @@ namespace MO
         auto [base, symbols] = get_base_and_symbols(a_conn);
 
         const auto &ecb = a_server.Get_Ecb();
-        auto result     = ecb.Get_Latest(symbols, base);
+        auto result = ecb.Get_Latest(symbols, base);
 
         a_server.print_result(a_conn, result);
     }
@@ -156,7 +156,7 @@ namespace MO
         Timepoint tp{std::string{uri_timepoint}};
 
         const auto &ecb = a_server.Get_Ecb();
-        auto result     = ecb.Get_Historical(tp, symbols, base);
+        auto result = ecb.Get_Historical(tp, symbols, base);
 
         a_server.print_result(a_conn, result);
     }
@@ -203,17 +203,17 @@ namespace MO
         if (a_result.error != Error::OK)
         {
             ans["success"] = false;
-            ans["error"]   = Json::Value();
+            ans["error"] = Json::Value();
 
             ans["error"]["code"] = a_result.error;
             ans["error"]["info"] = Error::TXT[a_result.error];
         }
         else
         {
-            ans["success"]  = true;
-            ans["base"]     = a_result.base.c_str();
-            ans["date"]     = a_result.timepoint.get();
-            ans["rates"]    = Json::Value();
+            ans["success"] = true;
+            ans["base"] = a_result.base.c_str();
+            ans["date"] = a_result.timepoint.get();
+            ans["rates"] = Json::Value();
             auto &ans_rates = ans["rates"]; // alias
 
             for (const auto &[sym, price]: a_result.prices)

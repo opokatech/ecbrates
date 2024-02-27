@@ -48,7 +48,7 @@ namespace MO
 
     using Symbol  = std::basic_string<char, Case_Insensitive_Char_Traits>;
     */
-    using Symbol  = std::string;
+    using Symbol = std::string;
     using Symbols = std::vector<Symbol>;
 
     static const Symbol DEFAULT_CURRENCY{"EUR"};
