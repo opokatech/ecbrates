@@ -3,7 +3,7 @@ Language: Cpp
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
+AlignConsecutiveDeclarations: false
 AlignOperands: true
 AllowShortFunctionsOnASingleLine: Empty
 AlwaysBreakTemplateDeclarations: Yes
@@ -30,7 +30,6 @@ IndentWidth:     4
 # Before hash option was added in version 9
 IndentPPDirectives: BeforeHash
 IndentCaseLabels: true
-IndentPPDirectives: AfterHash
 NamespaceIndentation: All
 ObjCBlockIndentWidth: 4
 SpaceBeforeInheritanceColon: false

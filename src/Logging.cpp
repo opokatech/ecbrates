@@ -1,8 +1,8 @@
 #include "Logging.hpp"
 
 #ifdef DEBUG
-#include <cstdarg>
-#include <cstdio>
+    #include <cstdarg>
+    #include <cstdio>
 #endif
 
 namespace MO

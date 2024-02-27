@@ -12,7 +12,10 @@
 
 volatile std::sig_atomic_t keep_running = 1;
 
-void sig_handler(int) { keep_running = 0; }
+void sig_handler(int)
+{
+    keep_running = 0;
+}
 
 int main(int argc, char *argv[])
 {

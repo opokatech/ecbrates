@@ -167,25 +167,25 @@ namespace MO
     {
         switch (a_event)
         {
-        case MG_AUTH:
-            return MG_TRUE;
-        case MG_REQUEST:
-            if (!strcmp(a_conn->uri, "/api/latest"))
-            {
-                auto srv = reinterpret_cast<Server *>(a_conn->server_param);
-                handle_latest(a_conn, *srv);
+            case MG_AUTH:
                 return MG_TRUE;
-            }
-            else if (is_historical_request(a_conn->uri))
-            {
-                auto srv = reinterpret_cast<Server *>(a_conn->server_param);
-                handle_historical(a_conn, *srv);
+            case MG_REQUEST:
+                if (!strcmp(a_conn->uri, "/api/latest"))
+                {
+                    auto srv = reinterpret_cast<Server *>(a_conn->server_param);
+                    handle_latest(a_conn, *srv);
+                    return MG_TRUE;
+                }
+                else if (is_historical_request(a_conn->uri))
+                {
+                    auto srv = reinterpret_cast<Server *>(a_conn->server_param);
+                    handle_historical(a_conn, *srv);
+                    return MG_TRUE;
+                }
+                mg_send_status(a_conn, 404);
                 return MG_TRUE;
-            }
-            mg_send_status(a_conn, 404);
-            return MG_TRUE;
-        default:
-            return MG_FALSE;
+            default:
+                return MG_FALSE;
         }
     }
 
@@ -216,7 +216,7 @@ namespace MO
             ans["rates"]    = Json::Value();
             auto &ans_rates = ans["rates"]; // alias
 
-            for (const auto &[sym, price] : a_result.prices)
+            for (const auto &[sym, price]: a_result.prices)
             {
                 ans_rates[sym.c_str()] = price;
             }

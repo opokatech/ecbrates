@@ -15,20 +15,30 @@ namespace MO
     class Ecb;
     struct Result;
 
-    class Server {
+    class Server
+    {
     public:
         Server(const Ecb &a_ecb, uint16_t a_port);
 
-        ~Server() { destroy(); }
+        ~Server()
+        {
+            destroy();
+        }
 
         /// Stars polling loop.
         void Start();
 
         /// Polling loop will end after calling stop().
-        void Stop() { m_running = false; }
+        void Stop()
+        {
+            m_running = false;
+        }
 
         /// Used to get saved
-        const Ecb &Get_Ecb() const { return m_ecb; }
+        const Ecb &Get_Ecb() const
+        {
+            return m_ecb;
+        }
 
     private:
         /// Initialize structures, sets server port.

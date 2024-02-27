@@ -5,7 +5,8 @@
 
 namespace MO
 {
-    template <typename Expected_Exception> void test_exception(std::function<void()> a_code_to_fail)
+    template <typename Expected_Exception>
+    void test_exception(std::function<void()> a_code_to_fail)
     {
         try
         {

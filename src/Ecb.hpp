@@ -14,19 +14,32 @@
 
 namespace MO
 {
-    class Ecb {
+    class Ecb
+    {
     public:
         using Timepoint_Prices = std::pair<Timepoint, Prices>;
 
         Ecb() = default;
-        Ecb(const Data_Source_File &a_data) { Load(a_data); }
-        Ecb(const Data_Source_Url &a_data) { Load(a_data); }
+        Ecb(const Data_Source_File &a_data)
+        {
+            Load(a_data);
+        }
+        Ecb(const Data_Source_Url &a_data)
+        {
+            Load(a_data);
+        }
 
         /// Load data from a file.
-        void Load(const Data_Source_File &a_filename) { load_file(a_filename); }
+        void Load(const Data_Source_File &a_filename)
+        {
+            load_file(a_filename);
+        }
 
         /// Load data from the network via url.
-        void Load(const Data_Source_Url &a_url) { load_url(a_url); }
+        void Load(const Data_Source_Url &a_url)
+        {
+            load_url(a_url);
+        }
 
         /// Clears the local database.
         void Clear()

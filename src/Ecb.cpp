@@ -70,7 +70,7 @@ namespace MO
         {
             if (symbols.size() > 0) // if we have any symbols then get only those
             {
-                for (const auto &sym : symbols)
+                for (const auto &sym: symbols)
                 {
                     if (sym == base)
                     {
@@ -115,7 +115,7 @@ namespace MO
             // now we can accept EUR too
             if (symbols.size() > 0)
             {
-                for (const auto &sym : symbols)
+                for (const auto &sym: symbols)
                 {
                     if (sym == base)
                     {
@@ -144,7 +144,7 @@ namespace MO
             else // get all symbols
             {
                 ret_prices[DEFAULT_CURRENCY] = 1.0 / base_in_eur; // add DEFAULT
-                for (const auto &[sym, value] : tp_prices)
+                for (const auto &[sym, value]: tp_prices)
                 {
                     if (sym != base) // don't add base
                     {
@@ -223,14 +223,14 @@ namespace MO
 
         // data parsed, so add it to the local map
         std::scoped_lock lock(m_mutex);
-        for (const auto &day_node : cube.children()) // each child is also "Cube"
+        for (const auto &day_node: cube.children()) // each child is also "Cube"
         {
             std::string time = day_node.attribute(TIME).as_string();
 
             Timepoint tp{time};
             Prices prices;
 
-            for (const auto &sym_node : day_node.children())
+            for (const auto &sym_node: day_node.children())
             {
                 if (strcmp(sym_node.name(), CUBE) == 0)
                 {
