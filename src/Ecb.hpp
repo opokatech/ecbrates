@@ -12,7 +12,7 @@
 #include "Result.hpp"
 #include "Timepoint.hpp"
 
-namespace MO
+namespace ECB
 {
     class Ecb
     {

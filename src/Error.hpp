@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <unordered_map>
 
-namespace MO
+namespace ECB
 {
     namespace Error
     {

@@ -5,7 +5,7 @@
 #include "Symbol.hpp"
 #include "Timepoint.hpp"
 
-namespace MO
+namespace ECB
 {
     // use it like const auto &[tp, prices, base, ...] = get_rates... ; // structure binding
     struct Result

@@ -4,7 +4,7 @@
 
 #include "Symbol.hpp"
 
-namespace MO
+namespace ECB
 {
     using Prices = std::map<Symbol, double>;
 }

@@ -4,7 +4,7 @@
 
 #include "Utils.hpp"
 
-namespace MO
+namespace ECB
 {
     namespace Utils
     {

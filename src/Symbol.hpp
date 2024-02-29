@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace MO
+namespace ECB
 {
     /* Using special char traits is nice - the string behaves like case insensitive,
      * however each time we compare strings we pay for this convenience.

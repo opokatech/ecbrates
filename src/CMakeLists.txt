@@ -1,5 +1,4 @@
-# add_library(ecb_lib STATIC Ecb.cpp Logging.cpp Server.cpp Timepoint.cpp Utils.cpp) target_include_directories(ecb_lib
-# PRIVATE ${EXTERNALS_INCLUDE_DIRS}) target_include_directories(ecb_lib PUBLIC .)
+add_library(ecb_lib STATIC Time_Point.cpp)
 
 # I added dl and pthread because of the static linking: If linked statically the order of libraries does matter and
 # libcrypto.a (which is needed by curl which is needed by cpr) needs libdl and libpthread, so they must be added AFTER
@@ -7,7 +6,7 @@
 # ${EXTERNALS_LIBRARIES} dl pthread) set_property(TARGET ecb_lib PROPERTY CXX_STANDARD 17)
 
 add_executable(ecbrates Main.cpp)
-target_link_libraries(ecbrates PRIVATE options version_info)
+target_link_libraries(ecbrates PRIVATE options version_info ecb_lib)
 
 add_custom_target(
     strip

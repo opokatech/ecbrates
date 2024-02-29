@@ -46,22 +46,22 @@ int main(int argc, char *argv[])
 
     std::cout << "Port: " << options.as_uint("port") << std::endl;
 
-    // MO::Ecb ecb;
+    // ECB::Ecb ecb;
 
-    // if (options.count(MO::OPT_LONG::XML_FILE) > 0)
+    // if (options.count(ECB::OPT_LONG::XML_FILE) > 0)
     // {
-    //     auto name = options[MO::OPT_LONG::XML_FILE].as<std::string>();
-    //     ecb.Load(MO::Data_Source_File{name.c_str()});
+    //     auto name = options[ECB::OPT_LONG::XML_FILE].as<std::string>();
+    //     ecb.Load(ECB::Data_Source_File{name.c_str()});
 
-    //     MO::Log("Loaded from file %s (days stored: %ud)\n", name.c_str(), ecb.Get_Timepoint_Count());
+    //     ECB::Log("Loaded from file %s (days stored: %ud)\n", name.c_str(), ecb.Get_Timepoint_Count());
     // }
 
-    // if (options.count(MO::OPT_LONG::XML_URL) > 0)
+    // if (options.count(ECB::OPT_LONG::XML_URL) > 0)
     // {
-    //     auto name = options[MO::OPT_LONG::XML_URL].as<std::string>();
-    //     ecb.Load(MO::Data_Source_Url{name.c_str()});
+    //     auto name = options[ECB::OPT_LONG::XML_URL].as<std::string>();
+    //     ecb.Load(ECB::Data_Source_Url{name.c_str()});
 
-    //     MO::Log("Loaded from url %s (days stored: %ud)\n", name.c_str(), ecb.Get_Timepoint_Count());
+    //     ECB::Log("Loaded from url %s (days stored: %ud)\n", name.c_str(), ecb.Get_Timepoint_Count());
     // }
 
     std::signal(SIGINT, sig_handler);
@@ -69,30 +69,30 @@ int main(int argc, char *argv[])
     // // start server if needs to be
     // if (has_port)
     // {
-    //     const auto &port_opt = options[MO::OPT_LONG::PORT];
+    //     const auto &port_opt = options[ECB::OPT_LONG::PORT];
     //     uint16_t port = port_opt.as<uint16_t>();
 
-    //     if (port < MO::OPT::PORT_MIN)
+    //     if (port < ECB::OPT::PORT_MIN)
     //     {
-    //         throw MO::Exception::Bad_Port(port_opt.as<std::string>());
+    //         throw ECB::Exception::Bad_Port(port_opt.as<std::string>());
     //     }
 
     //     // start server if possible
-    //     MO::Server server(ecb, port);
+    //     ECB::Server server(ecb, port);
 
     //     // load data in the same thread
     //     if (ecb.Get_Timepoint_Count() == 0)
     //     {
-    //         MO::Log("Loading historical ecb data...");
-    //         ecb.Load(MO::Data_Source_Url{MO::URL::ECB_HIST.c_str()});
-    //         MO::Log("done (days loaded: %u)\n", ecb.Get_Timepoint_Count());
+    //         ECB::Log("Loading historical ecb data...");
+    //         ecb.Load(ECB::Data_Source_Url{ECB::URL::ECB_HIST.c_str()});
+    //         ECB::Log("done (days loaded: %u)\n", ecb.Get_Timepoint_Count());
     //     }
 
     //     // start thread for serving web requests
     //     std::thread web_thread([&server]() {
-    //         MO::Log("starting web server\n");
+    //         ECB::Log("starting web server\n");
     //         server.Start();
-    //         MO::Log("stopping web server\n");
+    //         ECB::Log("stopping web server\n");
     //         server.Stop();
     //     });
 
@@ -107,18 +107,18 @@ int main(int argc, char *argv[])
     //         if (now - last_time > update_delay)
     //         {
     //             last_time = now;
-    //             MO::Log("Loading daily ecb data...");
-    //             ecb.Load(MO::Data_Source_Url{MO::URL::ECB_DAILY.c_str()});
-    //             MO::Log("done (total stored days: %u)\n", ecb.Get_Timepoint_Count());
+    //             ECB::Log("Loading daily ecb data...");
+    //             ecb.Load(ECB::Data_Source_Url{ECB::URL::ECB_DAILY.c_str()});
+    //             ECB::Log("done (total stored days: %u)\n", ecb.Get_Timepoint_Count());
     //         }
 
     //         std::this_thread::sleep_for(std::chrono::seconds(1));
     //         if (!keep_running)
     //         {
     //             server.Stop();
-    //             MO::Log("Waiting for web thread to join...");
+    //             ECB::Log("Waiting for web thread to join...");
     //             web_thread.join();
-    //             MO::Log("done\n");
+    //             ECB::Log("done\n");
     //             break;
     //         }
     //     }

@@ -10,7 +10,7 @@
 #include "Server.hpp"
 #include "Utils.hpp"
 
-namespace MO
+namespace ECB
 {
     Server::Server(const Ecb &a_ecb, uint16_t a_port) : m_ecb(a_ecb), m_port(a_port)
     {
@@ -34,7 +34,7 @@ namespace MO
     {
         if (m_server && !m_running)
         {
-            MO::Log("Starting on port %s\n", mg_get_option(m_server, "listening_port"));
+            ECB::Log("Starting on port %s\n", mg_get_option(m_server, "listening_port"));
             m_running = true;
             while (m_running)
             {
@@ -59,7 +59,7 @@ namespace MO
 
             if (err)
             {
-                throw MO::Exception::Bad_Port(err);
+                throw ECB::Exception::Bad_Port(err);
             }
         }
     }

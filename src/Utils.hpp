@@ -5,7 +5,7 @@
 
 #include "Symbol.hpp"
 
-namespace MO
+namespace ECB
 {
     namespace Utils
     {

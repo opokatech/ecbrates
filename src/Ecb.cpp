@@ -12,7 +12,7 @@
 #include "Timepoint.hpp"
 #include "Utils.hpp"
 
-namespace MO
+namespace ECB
 {
     Result Ecb::Get_Latest(std::optional<std::vector<Symbol>> a_symbols, std::optional<Symbol> a_base) const
     {
@@ -171,7 +171,7 @@ namespace MO
         }
         catch (...)
         {
-            MO::Log("Error loading from a file '%s'\n", a_filename.c_str());
+            ECB::Log("Error loading from a file '%s'\n", a_filename.c_str());
         }
     }
 
@@ -189,12 +189,12 @@ namespace MO
             }
             else
             {
-                MO::Log("Failed getting data from url '%s', status code = %d\n", a_url.c_str(), r.status_code);
+                ECB::Log("Failed getting data from url '%s', status code = %d\n", a_url.c_str(), r.status_code);
             }
         }
         catch (...)
         {
-            MO::Log("Error loading from url '%s'\n", a_url.c_str());
+            ECB::Log("Error loading from url '%s'\n", a_url.c_str());
         }
     }
 
@@ -245,4 +245,4 @@ namespace MO
         }
     }
 
-} // namespace MO
+} // namespace ECB

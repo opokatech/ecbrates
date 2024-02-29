@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace MO
+namespace ECB
 {
     struct Data_Source_File: public std::string
     {
@@ -13,4 +13,4 @@ namespace MO
     {
         using std::string::string;
     };
-} // namespace MO
+} // namespace ECB
