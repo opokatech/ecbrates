@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace ECB::VersionInfo
+namespace ECB::Version_Info
 {
     extern const std::string HASH;
     extern const std::string DATE;

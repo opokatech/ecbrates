@@ -22,6 +22,6 @@ else()
     set(GIT_DATE "Unknown")
 endif()
 
-configure_file(${PROJECT_SOURCE_DIR}/src/VersionInfo.cpp.in ${CMAKE_BINARY_DIR}/VersionInfo.cpp)
-add_library(version_info STATIC ${CMAKE_BINARY_DIR}/VersionInfo.cpp)
+configure_file(${PROJECT_SOURCE_DIR}/src/Version_Info.cpp.in ${CMAKE_BINARY_DIR}/Version_Info.cpp)
+add_library(version_info STATIC ${CMAKE_BINARY_DIR}/Version_Info.cpp)
 target_include_directories(version_info PUBLIC ${PROJECT_SOURCE_DIR}/src)

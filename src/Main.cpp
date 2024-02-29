@@ -7,7 +7,7 @@
 // #include "Server.hpp"
 
 #include "Logging.hpp"
-#include "VersionInfo.hpp"
+#include "Version_Info.hpp"
 #include "options/Converters.hpp"
 #include "options/Options.hpp"
 
@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
     if (!parse_result || show_help)
     {
         std::cout << "ECB Exchange Rates Server" << std::endl;
-        std::cout << "  Version: " << ECB::VersionInfo::HASH << std::endl;
-        std::cout << "  Date   : " << ECB::VersionInfo::DATE << std::endl;
+        std::cout << "  Version: " << ECB::Version_Info::HASH << std::endl;
+        std::cout << "  Date   : " << ECB::Version_Info::DATE << std::endl;
         std::cout << std::endl;
         std::cout << "Usage: " << argv[0] << " [options]" << std::endl;
         std::cout << options.get_possible_options() << std::endl;
