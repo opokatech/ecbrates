@@ -2,9 +2,9 @@ BUILD_DIR=build
 RELEASE_SUFFIX=_release
 DEBUG_SUFFIX=_debug
 
-CPU ?= native
-TESTS ?= 0
-STATIC ?= 0
+CPU?=native
+TESTS?=OFF
+STATIC?=OFF
 
 MAKEFLAGS+= --no-print-directory
 
@@ -14,6 +14,7 @@ help:
 	@echo ""
 	@echo " release    : compile with optimizations"
 	@echo " debug      : compile without optimizations"
+	@echo " tests      : as debug but with tests"
 	@echo ""
 	@echo "Options:"
 	@echo " CPU    : set this for crosscompile for armhf (only). If set it implies STATIC and NO TESTS"
@@ -21,8 +22,8 @@ help:
 	@echo "          Examples:"
 	@echo "          RaspberryPi3 - cortex-a53"
 	@echo "          BananPiPro   - cortex-a7"
-	@echo " TESTS  : 0|1 build google tests, default 0"
-	@echo " STATIC : 0|1 links statically, default 0"
+	@echo " TESTS  : ON|OFF build google tests (current value: ${TESTS})"
+	@echo " STATIC : ON|OFF links statically (current value: ${STATIC})"
 
 _build:
 	@if [ "x${CPU}" != "xnative" ]; \
@@ -51,12 +52,18 @@ clean:
 clang-format:
 	clang-format -i src/*pp tests/*pp
 
-.PHONY:release
+.PHONY: release
 release:
 	${MAKE} BUILD_DIR=${BUILD_DIR}_release_cpu_${CPU} BUILD_TYPE=Release _build
 	cmake --build ${BUILD_DIR}_release_cpu_${CPU} --target strip
 
-.PHONY:debug
+.PHONY: debug
 debug:
 	${MAKE} BUILD_DIR=${BUILD_DIR}_debug_cpu_${CPU} BUILD_TYPE=Debug _build
 	cmake --build ${BUILD_DIR}_debug_cpu_${CPU}
+
+.PHONY: tests
+tests:
+	TESTS=ON ${MAKE} debug
+	./build_debug_cpu_native/bin/ecbrates_test
+	
