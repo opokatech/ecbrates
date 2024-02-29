@@ -1,6 +1,6 @@
 #pragma once
 
-namespace MO
+namespace ECB
 {
     extern void Log(const char *a_format, ...);
 } // namespace MO

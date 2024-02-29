@@ -1,0 +1,7 @@
+#include "VersionInfo.hpp"
+
+namespace ECB::VersionInfo
+{
+    const std::string HASH{"@GIT_HASH@"};
+    const std::string DATE{"@GIT_DATE@"};
+}

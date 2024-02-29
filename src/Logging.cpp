@@ -5,7 +5,7 @@
     #include <cstdio>
 #endif
 
-namespace MO
+namespace ECB
 {
     void Log(const char *a_format, ...)
     {
