@@ -1,7 +1,7 @@
 #include "Data_Loader.hpp"
 #include "Logging.hpp"
 
-// #include "cpr/cpr.h"
+#include "cpr/cpr.h"
 #include "pugixml.hpp"
 
 #include <fstream>
@@ -27,23 +27,23 @@ namespace ECB
 
     std::vector<Record> Data_Loader::Load_Data_From_Url(const std::string &url)
     {
-        // try
-        // {
-        //     auto r = cpr::Get(cpr::Url{a_url}, cpr::VerifySsl{false});
+        try
+        {
+            auto r = cpr::Get(cpr::Url{url}, cpr::VerifySsl{false});
 
-        //     if (r.status_code == 200)
-        //     {
-        //         return load_data_from_xml_string(r.text);
-        //     }
-        //     else
-        //     {
-        //         ECB::Log("Failed getting data from url '%s', status code = %d\n", url.c_str(), r.status_code);
-        //     }
-        // }
-        // catch (...)
-        // {
-        //     ECB::Log("Error loading from url '%s'\n", url.c_str());
-        // }
+            if (r.status_code == 200)
+            {
+                return load_data_from_xml_string(r.text);
+            }
+            else
+            {
+                ECB::Log("Failed getting data from url '%s', status code = %d\n", url.c_str(), r.status_code);
+            }
+        }
+        catch (...)
+        {
+            ECB::Log("Error loading from url '%s'\n", url.c_str());
+        }
         return {};
     }
 
@@ -97,5 +97,4 @@ namespace ECB
 
         return records;
     }
-
 }; // namespace ECB
