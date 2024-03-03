@@ -10,15 +10,17 @@
 #include "Error.hpp"
 #include "Prices.hpp"
 #include "Result.hpp"
-#include "Timepoint.hpp"
+#incldue "Record.hpp"
 
 namespace ECB
 {
+    /// An object of this class stores exchange rates for different currencies at different time points and allows easy retrieval.
+    /// A single record consists of a time point, base and a set of values for different currencies.
+    /// Records can be added to this object and returned in with a different base or with different currencies.
+    /// Only a single record is always returned.
     class Ecb
     {
     public:
-        using Timepoint_Prices = std::pair<Timepoint, Prices>;
-
         Ecb() = default;
         Ecb(const Data_Source_File &a_data) { Load(a_data); }
         Ecb(const Data_Source_Url &a_data) { Load(a_data); }
@@ -71,7 +73,7 @@ namespace ECB
          */
         void load_data_from_string(const std::string &a_data);
 
-        std::map<Timepoint, Prices> m_data;
+        std::map<Time_Point, > m_data;
         mutable std::recursive_mutex m_mutex;
 
         const char *CUBE{"Cube"};

@@ -5,9 +5,11 @@
         "bugprone",
         "cppcoreguidelines",
         "dpkg",
+        "gesmes",
         "gnueabihf",
         "libcurl",
         "nodiscard",
+        "pugi",
         "Struct",
         "vararg"
     ]

@@ -7,7 +7,6 @@
 
 namespace ECB
 {
-    // use it like const auto &[tp, prices, base, ...] = get_rates... ; // structure binding
     struct Result
     {
         Result(bool a_historical = false, Error::TYPE a_error = Error::OK) : historical(a_historical), error(a_error) {}

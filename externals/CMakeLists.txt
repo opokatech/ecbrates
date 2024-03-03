@@ -1,6 +1,3 @@
-# CXXOPTS - header only library, so we export the include directory here
-add_subdirectory(cxxopts)
-
 # PUGIXML - it shuold export include libs automatically
 add_subdirectory(pugixml)
 
@@ -15,8 +12,6 @@ set(CURL_STATICLIB
     ON
     CACHE BOOL "" FORCE)
 add_subdirectory(cpr)
-
-# GTEST - are added if needs to be in ../CMakeLists.txt
 
 # JSONCPP
 set(JSONCPP_WITH_TESTS

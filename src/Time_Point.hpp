@@ -5,6 +5,7 @@
 namespace ECB
 {
     /// Represents a time point in the format "yyyy-mm-dd".
+    /// No checking is made on the validity of the date.
     class Time_Point
     {
     public:
