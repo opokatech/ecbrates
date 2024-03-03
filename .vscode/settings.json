@@ -12,5 +12,8 @@
         "pugi",
         "Struct",
         "vararg"
-    ]
+    ],
+    "files.associations": {
+        "iosfwd": "cpp"
+    }
 }
