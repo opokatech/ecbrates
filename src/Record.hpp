@@ -22,7 +22,12 @@ namespace ECB
         const Symbol &Get_Base() const { return m_base; }
         const std::vector<Currency_Value> &Get_Rates() const { return m_rates; }
 
+        std::string Get_As_String_With_Base() const { return get_as_string(true); }
+        std::string Get_As_String_Without_Base() const { return get_as_string(false); }
+
     private:
+        std::string get_as_string(bool with_base) const;
+
         Time_Point m_time_point;
         Symbol m_base;
         std::vector<Currency_Value> m_rates;
