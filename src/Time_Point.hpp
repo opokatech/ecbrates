@@ -12,7 +12,7 @@ namespace ECB
 
         Time_Point(const std::string &value);
 
-        bool is_initialized() const { return !m_date.empty(); }
+        bool is_set() const { return !m_date.empty(); }
 
         operator std::string() const { return m_date; }
 
