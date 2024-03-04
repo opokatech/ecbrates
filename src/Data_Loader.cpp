@@ -4,6 +4,7 @@
 #include "cpr/cpr.h"
 #include "pugixml.hpp"
 
+#include <cstring>
 #include <fstream>
 
 namespace ECB
