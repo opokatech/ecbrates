@@ -15,5 +15,6 @@
     ],
     "files.associations": {
         "iosfwd": "cpp"
-    }
+    },
+    "testMate.cpp.test.executables": "{build}*/**/*{test}"
 }

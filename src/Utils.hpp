@@ -1,18 +1,18 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "Symbol.hpp"
+
+#include <vector>
 
 namespace ECB
 {
-    namespace Utils
+    class Utils
     {
+    public:
         /// Split given string using given delimiter.
-        std::vector<Symbol> split(const std::string &a_string, char a_delimiter);
+        static std::vector<Symbol> split(const std::string &a_string, char a_delimiter);
 
         /// Makes string uppercase inplace.
-        std::string &uppercase(std::string &a_string);
-    } // namespace Utils
-} // namespace MO
+        static std::string &uppercase(std::string &a_string);
+    };
+} // namespace ECB

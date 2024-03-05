@@ -1,36 +1,21 @@
 #pragma once
 
+#include "Record.hpp"
+
 #include <map>
 #include <mutex>
 #include <optional>
-#include <string>
 #include <vector>
-
-#include "Data_Source.hpp"
-#include "Error.hpp"
-#include "Prices.hpp"
-#include "Result.hpp"
-#incldue "Record.hpp"
 
 namespace ECB
 {
-    /// An object of this class stores exchange rates for different currencies at different time points and allows easy retrieval.
-    /// A single record consists of a time point, base and a set of values for different currencies.
-    /// Records can be added to this object and returned in with a different base or with different currencies.
-    /// Only a single record is always returned.
+    /// An object of this class stores exchange rates for different currencies at different time points and allows easy
+    /// retrieval. A single record consists of a time point, base and a set of values for different currencies. Records
+    /// can be added to this object and returned in with a different base or with different currencies. Only a single
+    /// record is always returned.
     class Ecb
     {
     public:
-        Ecb() = default;
-        Ecb(const Data_Source_File &a_data) { Load(a_data); }
-        Ecb(const Data_Source_Url &a_data) { Load(a_data); }
-
-        /// Load data from a file.
-        void Load(const Data_Source_File &a_filename) { load_file(a_filename); }
-
-        /// Load data from the network via url.
-        void Load(const Data_Source_Url &a_url) { load_url(a_url); }
-
         /// Clears the local database.
         void Clear()
         {
@@ -38,47 +23,33 @@ namespace ECB
             m_data.clear();
         }
 
-        /// Returns number of timepoints stored.
-        size_t Get_Timepoint_Count() const
+        /// Returns number of stored records.
+        size_t Count() const
         {
             std::scoped_lock lock(m_mutex);
             return m_data.size();
         }
 
-        /// Get full result set for the latest data.
-        Result Get_Latest(std::optional<std::vector<Symbol>>, std::optional<Symbol>) const;
+        /// Adds a new record to the local database.
+        void Add(const Record &a_record)
+        {
+            std::scoped_lock lock(m_mutex);
+            m_data[a_record.Get_Time_Point()] = a_record;
+        }
 
-        /// Get full result set for the data from given timepoint.
-        Result Get_Historical(const Timepoint &, std::optional<std::vector<Symbol>>, std::optional<Symbol>) const;
+        /// Adds a vector of records to the local database.
+        void Add(const std::vector<Record> &a_records)
+        {
+            std::scoped_lock lock(m_mutex);
+            for (const auto &rec: a_records)
+                m_data[rec.Get_Time_Point()] = rec;
+        }
+
+        /// Returns a record for the given time point. If the base is given, the record is rebased to the given base.
+        std::optional<Record> Get(const Time_Point &tp, std::optional<Symbol> base) const;
 
     private:
-        /// Common function used by Get_Latest and Get_Historical.
-        Result get_data(const Timepoint_Prices &, bool a_historical, std::optional<std::vector<Symbol>>,
-                        std::optional<Symbol>) const;
-        /** Loads data from a file.
-         *
-         * Loads content of a file and calls load_data_from_string.
-         */
-        void load_file(const std::string &a_filename);
-
-        /** Loads data from given url.
-         *
-         * Loads content from the url and calls load_data_from_string.
-         */
-        void load_url(const std::string &a_url);
-
-        /** Loads data from given xml string.
-         *
-         * If data at given timepoint is already there - it will be overwritten.
-         */
-        void load_data_from_string(const std::string &a_data);
-
-        std::map<Time_Point, > m_data;
+        std::map<Time_Point, Record> m_data;
         mutable std::recursive_mutex m_mutex;
-
-        const char *CUBE{"Cube"};
-        const char *TIME{"time"};
-        const char *CURRENCY{"currency"};
-        const char *RATE{"rate"};
     };
-} // namespace MO
+} // namespace ECB

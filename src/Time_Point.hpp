@@ -15,6 +15,13 @@ namespace ECB
 
         bool is_set() const { return !m_date.empty(); }
 
+        bool operator==(const Time_Point &other) const { return m_date == other.m_date; }
+        bool operator!=(const Time_Point &other) const { return m_date != other.m_date; }
+        bool operator<(const Time_Point &other) const { return m_date < other.m_date; }
+        bool operator>(const Time_Point &other) const { return m_date > other.m_date; }
+        bool operator<=(const Time_Point &other) const { return m_date <= other.m_date; }
+        bool operator>=(const Time_Point &other) const { return m_date >= other.m_date; }
+
         operator std::string() const { return m_date; }
 
     private:
