@@ -72,9 +72,6 @@ namespace ECB
         auto root = doc.first_child();  // "gesmes:Envelope" is the name
         auto cube = root.child("Cube"); // root of all currency data
 
-        // data parsed, so add it to the local map
-        // std::scoped_lock lock(m_mutex);
-
         const Symbol BASE{"EUR"};
         for (const auto &day_node: cube.children()) // each child is also "Cube"
         {

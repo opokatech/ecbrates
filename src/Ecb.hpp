@@ -30,6 +30,14 @@ namespace ECB
             return m_data.size();
         }
 
+        std::optional<Time_Point> Get_Last() const
+        {
+            std::scoped_lock lock(m_mutex);
+            if (m_data.empty())
+                return {};
+            return m_data.rbegin()->first;
+        }
+
         /// Adds a new record to the local database.
         void Add(const Record &a_record)
         {

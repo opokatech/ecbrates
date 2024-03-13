@@ -6,4 +6,4 @@ namespace ECB::Version_Info
 {
     extern const std::string HASH;
     extern const std::string DATE;
-} // namespace ECB::Version
+} // namespace ECB::Version_Info

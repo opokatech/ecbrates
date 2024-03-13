@@ -21,4 +21,4 @@ namespace ECB
                                                             {NOT_FOUND, "Resource not found"},
                                                             {UNKNOWN_ERROR, "Something went wrong"}};
     } // namespace Error
-} // namespace MO
+} // namespace ECB

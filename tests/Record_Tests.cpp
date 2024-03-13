@@ -35,8 +35,8 @@ TEST(Record, Rebase)
     rec.Rebase("USD");
 
     EXPECT_EQ(static_cast<std::string>(rec.Get_Time_Point()), "1234-56-78"); // no change
-    EXPECT_EQ(rec.Get_Base(), "USD"); // changed
-    EXPECT_EQ(rec.Get_Rates().size(), 2); // same size
+    EXPECT_EQ(rec.Get_Base(), "USD");                                        // changed
+    EXPECT_EQ(rec.Get_Rates().size(), 2);                                    // same size
 
     EXPECT_EQ(rec.Get_As_String_With_Base(), "1234-56-78(USD): EUR(0.81) GBP(1.90)");
     EXPECT_EQ(rec.Get_As_String_Without_Base(), "1234-56-78: EUR(0.81) GBP(1.90)");
