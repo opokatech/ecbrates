@@ -12,7 +12,7 @@ target_link_libraries(ecb_data_loader PRIVATE ecb_compiler_flags ecb_lib pugixml
 # ${EXTERNALS_LIBRARIES} dl pthread) set_property(TARGET ecb_lib PROPERTY CXX_STANDARD 17)
 
 add_executable(ecb_server Main_Server.cpp)
-target_link_libraries(ecb_server PRIVATE ecb_compiler_flags options version_info ecb_lib)
+target_link_libraries(ecb_server PRIVATE ecb_compiler_flags options version_info ecb_lib ecb_data_loader)
 
 add_custom_target(strip COMMAND ${COMPILER_PREFIX}strip ${CMAKE_BINARY_DIR}/bin/ecb_server DEPENDS ecb_server)
 

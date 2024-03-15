@@ -1,27 +1,43 @@
-#include <csignal>
-// #include <thread>
-
-// #include "Const.hpp"
-// #include "Ecb.hpp"
-// #include "Exceptions.hpp"
-// #include "Server.hpp"
-
+#include "Data_Loader.hpp"
+#include "Ecb.hpp"
 #include "Logging.hpp"
+#include "Urls.hpp"
 #include "Version_Info.hpp"
 #include "options/Converters.hpp"
 #include "options/Options.hpp"
+// #include "Server.hpp"
+// #include "Exceptions.hpp"
 
+#include <csignal>
 #include <iostream>
+#include <thread>
 
 volatile std::sig_atomic_t keep_running = 1;
+volatile std::sig_atomic_t load_more_data = 0;
 
-void sig_handler(int) { keep_running = 0; }
+void sig_handler_int(int) { keep_running = 0; }
+void sig_handler_usr1(int) { load_more_data = 1; }
 
 int main(int argc, char *argv[])
 {
     Options::Options options;
 
-    options.add_optional("port", "HTTP port to listen on", "8080", [](const std::string &value) {
+    // this service allows to
+    // - load any data file from file or url - to have something to serve,
+    // - serve the data via http server on a given TCP/IP port,
+    // - on signal load more data from the url,
+    // - if port is not given then it will serve on the console
+
+    options.add_optional("xml_file", "Load data from a file at start", "",
+                         [](const std::string &value) { return !value.empty(); });
+
+    options.add_optional("xml_url", "Load data from a url at start", "",
+                         [](const std::string &value) { return !value.empty(); });
+
+    options.add_optional("signal_xml_url", "On signal load more data from this url", "",
+                         [](const std::string &value) { return !value.empty(); });
+
+    options.add_optional("port", "HTTP port to listen on", "0", [](const std::string &value) {
         uint32_t num = Options::as_uint(value);
         return num >= 1 && num <= 65535; // NOLINT
     });
@@ -46,83 +62,88 @@ int main(int argc, char *argv[])
 
     std::cout << "Port: " << options.as_uint("port") << std::endl;
 
-    // ECB::Ecb ecb;
+    ECB::Ecb ecb;
 
-    // if (options.count(ECB::OPT_LONG::XML_FILE) > 0)
-    // {
-    //     auto name = options[ECB::OPT_LONG::XML_FILE].as<std::string>();
-    //     ecb.Load(ECB::Data_Source_File{name.c_str()});
+    if (!options.as_string("xml_file").empty())
+    {
+        const auto data = ECB::Data_Loader::Load_From_File(options.as_string("xml_file"));
 
-    //     ECB::Log("Loaded from file %s (days stored: %ud)\n", name.c_str(), ecb.Get_Timepoint_Count());
-    // }
+        if (!data.empty())
+        {
+            std::cout << "Loaded " << data.size() << " records from file: " << options.as_string("xml_file")
+                      << std::endl;
+            ecb.Add(data);
+        }
+        ecb.Add(data);
+    }
 
-    // if (options.count(ECB::OPT_LONG::XML_URL) > 0)
-    // {
-    //     auto name = options[ECB::OPT_LONG::XML_URL].as<std::string>();
-    //     ecb.Load(ECB::Data_Source_Url{name.c_str()});
+    if (!options.as_string("xml_url").empty())
+    {
+        const auto data = ECB::Data_Loader::Load_From_Url(options.as_string("xml_url"));
 
-    //     ECB::Log("Loaded from url %s (days stored: %ud)\n", name.c_str(), ecb.Get_Timepoint_Count());
-    // }
+        if (!data.empty())
+        {
+            std::cout << "Loaded " << data.size() << " records from url: " << options.as_string("xml_url") << std::endl;
+            ecb.Add(data);
+        }
+    }
 
-    std::signal(SIGINT, sig_handler);
+    // TODO move somewhere else
+    struct sigaction sa_int;
+    sa_int.sa_handler = sig_handler_int;
+    sigemptyset(&sa_int.sa_mask);
+    sa_int.sa_flags = 0;
+    if (sigaction(SIGINT, &sa_int, nullptr) == -1)
+    {
+        std::cerr << "Failed to set SIGINT handler\n";
+        return 1;
+    }
 
-    // // start server if needs to be
-    // if (has_port)
-    // {
-    //     const auto &port_opt = options[ECB::OPT_LONG::PORT];
-    //     uint16_t port = port_opt.as<uint16_t>();
+    struct sigaction sa_usr1;
+    sa_usr1.sa_handler = sig_handler_usr1;
+    sigemptyset(&sa_usr1.sa_mask);
+    sa_usr1.sa_flags = 0;
+    if (sigaction(SIGUSR1, &sa_usr1, nullptr) == -1)
+    {
+        std::cerr << "Failed to set SIGUSR1 handler\n";
+        return 1;
+    }
 
-    //     if (port < ECB::OPT::PORT_MIN)
-    //     {
-    //         throw ECB::Exception::Bad_Port(port_opt.as<std::string>());
-    //     }
+    const uint16_t port = options.as_uint("port");
+    if (port > 0)
+    {
+        std::cout << "Starting server on port " << options.as_uint("port") << std::endl;
+        //     // start server if possible
+        //     ECB::Server server(ecb, port);
 
-    //     // start server if possible
-    //     ECB::Server server(ecb, port);
+        //     // start thread for serving web requests
+        //     std::thread web_thread([&server]() {
+        //         ECB::Log("starting web server\n");
+        //         server.Start();
+        //         ECB::Log("stopping web server\n");
+        //         server.Stop();
+        //     });
 
-    //     // load data in the same thread
-    //     if (ecb.Get_Timepoint_Count() == 0)
-    //     {
-    //         ECB::Log("Loading historical ecb data...");
-    //         ecb.Load(ECB::Data_Source_Url{ECB::URL::ECB_HIST.c_str()});
-    //         ECB::Log("done (days loaded: %u)\n", ecb.Get_Timepoint_Count());
-    //     }
+        while (keep_running)
+        {
+            if (load_more_data)
+            {
+                load_more_data = 0;
+                std::cout << "load more data" << std::endl;
+            }
+            using namespace std::chrono_literals;
+            std::this_thread::sleep_for(1s);
+        }
 
-    //     // start thread for serving web requests
-    //     std::thread web_thread([&server]() {
-    //         ECB::Log("starting web server\n");
-    //         server.Start();
-    //         ECB::Log("stopping web server\n");
-    //         server.Stop();
-    //     });
-
-    //     auto last_time = std::chrono::system_clock::now();
-    //     auto update_delay = std::chrono::hours{1};
-
-    //     // this thread will periodically fetch more data
-    //     while (true)
-    //     {
-    //         auto now = std::chrono::system_clock::now();
-
-    //         if (now - last_time > update_delay)
-    //         {
-    //             last_time = now;
-    //             ECB::Log("Loading daily ecb data...");
-    //             ecb.Load(ECB::Data_Source_Url{ECB::URL::ECB_DAILY.c_str()});
-    //             ECB::Log("done (total stored days: %u)\n", ecb.Get_Timepoint_Count());
-    //         }
-
-    //         std::this_thread::sleep_for(std::chrono::seconds(1));
-    //         if (!keep_running)
-    //         {
-    //             server.Stop();
-    //             ECB::Log("Waiting for web thread to join...");
-    //             web_thread.join();
-    //             ECB::Log("done\n");
-    //             break;
-    //         }
-    //     }
-    // }
+        // server.Stop();
+        // ECB::Log("Waiting for web thread to join...");
+        // web_thread.join();
+        // ECB::Log("done\n");
+    }
+    else
+    {
+        std::cout << "Starting console server" << std::endl;
+    }
 
     return 0;
 }
