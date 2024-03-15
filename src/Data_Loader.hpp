@@ -9,17 +9,19 @@ namespace ECB
     class Data_Loader
     {
     public:
+        Data_Loader() = delete;
+
         /// Load data from a file and return a vector of records.
         /// Returns an empty vector if the data could not be loaded.
-        static std::vector<Record> Load_Data_From_File(const std::string &file_name);
+        static std::vector<Record> Load_From_File(const std::string &file_name);
 
         /// Load data from a url and return a vector of records.
         /// Returns an empty vector if the data could not be loaded.
-        static std::vector<Record> Load_Data_From_Url(const std::string &url);
+        static std::vector<Record> Load_From_Url(const std::string &url, const std::string &save_to_file = "");
 
     private:
         /// Load data from a string and return a vector of records.
-        static std::vector<Record> load_data_from_xml_string(const std::string &data);
+        static std::vector<Record> load_from_xml_string(const std::string &data);
     };
 
 } // namespace ECB

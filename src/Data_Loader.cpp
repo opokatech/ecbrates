@@ -9,7 +9,7 @@
 
 namespace ECB
 {
-    std::vector<Record> Data_Loader::Load_Data_From_File(const std::string &file_name)
+    std::vector<Record> Data_Loader::Load_From_File(const std::string &file_name)
     {
         try
         {
@@ -17,16 +17,16 @@ namespace ECB
             std::string content(std::istreambuf_iterator<char>{file}, {});
             file.close();
 
-            return load_data_from_xml_string(content);
+            return load_from_xml_string(content);
         }
         catch (...)
         {
-            ECB::Log("Error loading from a file '%s'\n", file_name.c_str());
+            Log("Error loading from a file '%s'\n", file_name.c_str());
         }
         return {};
     }
 
-    std::vector<Record> Data_Loader::Load_Data_From_Url(const std::string &url)
+    std::vector<Record> Data_Loader::Load_From_Url(const std::string &url, const std::string &save_to_file)
     {
         try
         {
@@ -34,21 +34,27 @@ namespace ECB
 
             if (r.status_code == 200)
             {
-                return load_data_from_xml_string(r.text);
+                if (!save_to_file.empty())
+                {
+                    std::ofstream file(save_to_file);
+                    file << r.text;
+                    file.close();
+                }
+                return load_from_xml_string(r.text);
             }
             else
             {
-                ECB::Log("Failed getting data from url '%s', status code = %d\n", url.c_str(), r.status_code);
+                Log("Failed getting data from url '%s', status code = %d\n", url.c_str(), r.status_code);
             }
         }
         catch (...)
         {
-            ECB::Log("Error loading from url '%s'\n", url.c_str());
+            Log("Error loading from url '%s'\n", url.c_str());
         }
         return {};
     }
 
-    std::vector<Record> Data_Loader::load_data_from_xml_string(const std::string &data)
+    std::vector<Record> Data_Loader::load_from_xml_string(const std::string &data)
     {
         std::vector<Record> records;
 
@@ -65,7 +71,7 @@ namespace ECB
 
         if (!parse_result)
         {
-            ECB::Log("Error parsing xml: %s\n", parse_result.description());
+            Log("Error parsing xml: %s\n", parse_result.description());
             return records;
         }
 
