@@ -40,7 +40,7 @@ namespace ECB
         static bool is_historical_request(const char *);
 
         /// Handle requests.
-        static int handler(struct mg_connection *a_conn, enum mg_event a_event);
+        static int handler(struct mg_connection *a_conn, int a_event, void *a_data);
 
         /// Handle latest api endpoint.
         static void handle_latest(struct mg_connection *a_conn, Server &a_server);

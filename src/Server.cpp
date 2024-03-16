@@ -29,44 +29,44 @@ namespace ECB
 
     void Server::Start()
     {
-        if (m_server && !m_running)
-        {
-            ECB::Log("Starting on port %s\n", mg_get_option(m_server, "listening_port"));
-            m_running = true;
-            while (m_running)
-            {
-                mg_poll_server(m_server, 500);
-                // MO::Log("poll...\n");
-            }
-        }
+        // if (m_server && !m_running)
+        // {
+        //     ECB::Log("Starting on port %s\n", mg_get_option(m_server, "listening_port"));
+        //     m_running = true;
+        //     while (m_running)
+        //     {
+        //         mg_poll_server(m_server, 500);
+        //         // MO::Log("poll...\n");
+        //     }
+        // }
     }
 
     void Server::create()
     {
-        if (m_server == nullptr)
-        {
-            std::stringstream port_string;
-            port_string << m_port;
+        // if (m_server == nullptr)
+        // {
+        //     std::stringstream port_string;
+        //     port_string << m_port;
 
-            // Create and configure the server
-            m_server = mg_create_server(this, handler);
-            const char *err = mg_set_option(m_server, "listening_port", port_string.str().c_str());
+        //     // Create and configure the server
+        //     m_server = mg_create_server(this, handler);
+        //     const char *err = mg_set_option(m_server, "listening_port", port_string.str().c_str());
 
-            if (err)
-            {
-                throw ECB::Exception::Bad_Port(err);
-            }
-        }
+        //     if (err)
+        //     {
+        //         throw ECB::Exception::Bad_Port(err);
+        //     }
+        // }
     }
 
     void Server::destroy()
     {
-        if (m_server != nullptr)
-        {
-            // Cleanup, and free server instance
-            mg_destroy_server(&m_server);
-            m_server = nullptr;
-        }
+        // if (m_server != nullptr)
+        // {
+        //     // Cleanup, and free server instance
+        //     mg_destroy_server(&m_server);
+        //     m_server = nullptr;
+        // }
     }
 
     bool Server::is_historical_request(const char *a_uri)
@@ -146,66 +146,66 @@ namespace ECB
         // a_server.print_result(a_conn, result);
     }
 
-    int Server::handler(struct mg_connection *a_conn, enum mg_event a_event)
+    int Server::handler(struct mg_connection *a_conn, int a_event, void *a_data)
     {
-        switch (a_event)
-        {
-            case MG_AUTH:
-                return MG_TRUE;
-            case MG_REQUEST:
-                if (!strcmp(a_conn->uri, "/api/latest"))
-                {
-                    auto srv = reinterpret_cast<Server *>(a_conn->server_param);
-                    handle_latest(a_conn, *srv);
-                    return MG_TRUE;
-                }
-                else if (is_historical_request(a_conn->uri))
-                {
-                    auto srv = reinterpret_cast<Server *>(a_conn->server_param);
-                    handle_historical(a_conn, *srv);
-                    return MG_TRUE;
-                }
-                mg_send_status(a_conn, 404);
-                return MG_TRUE;
-            default:
-                return MG_FALSE;
-        }
+        // auto srv = reinterpret_cast<Server *>(a_conn->server_param);
+
+        // switch (a_event)
+        // {
+        //     case MG_AUTH:
+        //         return MG_TRUE;
+        //     case MG_REQUEST:
+        //         if (!strcmp(a_conn->uri, "/api/latest"))
+        //         {
+        //             handle_latest(a_conn, *srv);
+        //             return MG_TRUE;
+        //         }
+        //         else if (is_historical_request(a_conn->uri))
+        //         {
+        //             handle_historical(a_conn, *srv);
+        //             return MG_TRUE;
+        //         }
+        //         mg_send_status(a_conn, 404);
+        //         return MG_TRUE;
+        //     default:
+        //         return MG_FALSE;
+        // }
     }
 
     void Server::print_result(struct mg_connection *a_conn, const Result &a_result)
     {
-        Json::Value ans;
+        // Json::Value ans;
 
-        if (a_result.historical)
-        {
-            ans["historical"] = true;
-        }
+        // if (a_result.historical)
+        // {
+        //     ans["historical"] = true;
+        // }
 
-        if (a_result.error != Error::OK)
-        {
-            ans["success"] = false;
-            ans["error"] = Json::Value();
+        // if (a_result.error != Error::OK)
+        // {
+        //     ans["success"] = false;
+        //     ans["error"] = Json::Value();
 
-            ans["error"]["code"] = a_result.error;
-            ans["error"]["info"] = Error::TXT[a_result.error];
-        }
-        else
-        {
-            ans["success"] = true;
-            ans["base"] = a_result.base.c_str();
-            ans["date"] = a_result.timepoint.get();
-            ans["rates"] = Json::Value();
-            auto &ans_rates = ans["rates"]; // alias
+        //     ans["error"]["code"] = a_result.error;
+        //     ans["error"]["info"] = Error::TXT[a_result.error];
+        // }
+        // else
+        // {
+        //     ans["success"] = true;
+        //     ans["base"] = a_result.base.c_str();
+        //     ans["date"] = a_result.timepoint.get();
+        //     ans["rates"] = Json::Value();
+        //     auto &ans_rates = ans["rates"]; // alias
 
-            for (const auto &[sym, price]: a_result.prices)
-            {
-                ans_rates[sym.c_str()] = price;
-            }
-        }
+        //     for (const auto &[sym, price]: a_result.prices)
+        //     {
+        //         ans_rates[sym.c_str()] = price;
+        //     }
+        // }
 
-        std::stringstream ss;
+        // std::stringstream ss;
 
-        m_json_writer->write(ans, &ss);
-        mg_printf_data(a_conn, ss.str().c_str());
+        // m_json_writer->write(ans, &ss);
+        // mg_printf_data(a_conn, ss.str().c_str());
     }
 } // namespace ECB

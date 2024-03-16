@@ -46,6 +46,7 @@ FetchContent_Declare(
 set(JSONCPP_WITH_TESTS OFF CACHE INTERNAL "" FORCE)
 set(JSONCPP_WITH_POST_BUILD_UNITTEST OFF CACHE INTERNAL "" FORCE)
 set(JSONCPP_WITH_PKGCONFIG_SUPPORT OFF CACHE INTERNAL "" FORCE)
+set(BUILD_STATIC_LIBS ON CACHE INTERNAL "" FORCE)
 message(STATUS "${ColorYellow}Fetching jsoncpp...${ColorReset}")
 FetchContent_MakeAvailable(jsoncpp)
 message(STATUS "${ColorGreen}jsoncpp ready${ColorReset}")

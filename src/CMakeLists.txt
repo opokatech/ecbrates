@@ -8,7 +8,7 @@ target_link_libraries(ecb_data_loader PRIVATE ecb_compiler_flags ecb_lib pugixml
 
 add_library(ecb_http_server STATIC Server.cpp)
 target_include_directories(ecb_http_server PUBLIC .)
-target_link_libraries(ecb_http_server PRIVATE ecb_compiler_flags ecb_lib jsoncpp_lib_static mongoose)
+target_link_libraries(ecb_http_server PRIVATE ecb_compiler_flags ecb_lib jsoncpp_static mongoose)
 
 # I added dl and pthread because of the static linking: If linked statically the order of libraries does matter and
 # libcrypto.a (which is needed by curl which is needed by cpr) needs libdl and libpthread, so they must be added AFTER
