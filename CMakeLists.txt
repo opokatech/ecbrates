@@ -13,6 +13,8 @@ include(cmake/version_info.cmake)
 include(cmake/compiler_flags.cmake)
 include(cmake/externals.cmake)
 
+add_subdirectory(externals/mongoose)
+
 add_subdirectory(src)
 
 if(ECB_PARAM_TESTS)

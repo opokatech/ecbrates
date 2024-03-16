@@ -5,7 +5,6 @@
 #include "json/json.h"
 
 #include "Ecb.hpp"
-#include "Exceptions.hpp"
 #include "Logging.hpp"
 #include "Server.hpp"
 #include "Utils.hpp"
@@ -28,8 +27,6 @@ namespace ECB
         create();
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
     void Server::Start()
     {
         if (m_server && !m_running)
@@ -43,8 +40,6 @@ namespace ECB
             }
         }
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     void Server::create()
     {
@@ -64,8 +59,6 @@ namespace ECB
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
     void Server::destroy()
     {
         if (m_server != nullptr)
@@ -75,8 +68,6 @@ namespace ECB
             m_server = nullptr;
         }
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     bool Server::is_historical_request(const char *a_uri)
     {
@@ -106,62 +97,54 @@ namespace ECB
         return true;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // std::tuple<Symbol, Symbols> Server::get_base_and_symbols(struct mg_connection *a_conn)
+    // {
+    //     char base_str[100], symbols_str[100];
+    //     bool base_set = false, symbols_set = false;
 
-    std::tuple<Symbol, Symbols> Server::get_base_and_symbols(struct mg_connection *a_conn)
-    {
-        char base_str[100], symbols_str[100];
-        bool base_set = false, symbols_set = false;
+    //     // Get form variables
+    //     base_set = (mg_get_var(a_conn, "base", base_str, sizeof(base_str)) > 0);
+    //     symbols_set = (mg_get_var(a_conn, "symbols", symbols_str, sizeof(symbols_str)) > 0);
 
-        // Get form variables
-        base_set = (mg_get_var(a_conn, "base", base_str, sizeof(base_str)) > 0);
-        symbols_set = (mg_get_var(a_conn, "symbols", symbols_str, sizeof(symbols_str)) > 0);
+    //     Symbol base = DEFAULT_CURRENCY;
+    //     if (base_set)
+    //     {
+    //         base = base_str;
+    //     }
 
-        Symbol base = DEFAULT_CURRENCY;
-        if (base_set)
-        {
-            base = base_str;
-        }
+    //     Symbols symbols;
+    //     if (symbols_set)
+    //     {
+    //         symbols = Utils::split(symbols_str, ',');
+    //     }
 
-        Symbols symbols;
-        if (symbols_set)
-        {
-            symbols = Utils::split(symbols_str, ',');
-        }
-
-        return {base, symbols};
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
+    //     return {base, symbols};
+    // }
 
     void Server::handle_latest(struct mg_connection *a_conn, Server &a_server)
     {
-        auto [base, symbols] = get_base_and_symbols(a_conn);
+        // auto [base, symbols] = get_base_and_symbols(a_conn);
 
-        const auto &ecb = a_server.Get_Ecb();
-        auto result = ecb.Get_Latest(symbols, base);
+        // const auto &ecb = a_server.Get_Ecb();
+        // auto result = ecb.Get_Latest(symbols, base);
 
-        a_server.print_result(a_conn, result);
+        // a_server.print_result(a_conn, result);
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     void Server::handle_historical(struct mg_connection *a_conn, Server &a_server)
     {
-        auto [base, symbols] = get_base_and_symbols(a_conn);
+        // auto [base, symbols] = get_base_and_symbols(a_conn);
 
-        // get uri
-        std::string_view uri(a_conn->uri);
-        std::string_view uri_timepoint = uri.substr(5); // "/api/yyyy-dd-mm"
-        Timepoint tp{std::string{uri_timepoint}};
+        // // get uri
+        // std::string_view uri(a_conn->uri);
+        // std::string_view uri_timepoint = uri.substr(5); // "/api/yyyy-dd-mm"
+        // Timepoint tp{std::string{uri_timepoint}};
 
-        const auto &ecb = a_server.Get_Ecb();
-        auto result = ecb.Get_Historical(tp, symbols, base);
+        // const auto &ecb = a_server.Get_Ecb();
+        // auto result = ecb.Get_Historical(tp, symbols, base);
 
-        a_server.print_result(a_conn, result);
+        // a_server.print_result(a_conn, result);
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     int Server::handler(struct mg_connection *a_conn, enum mg_event a_event)
     {
@@ -188,8 +171,6 @@ namespace ECB
                 return MG_FALSE;
         }
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     void Server::print_result(struct mg_connection *a_conn, const Result &a_result)
     {

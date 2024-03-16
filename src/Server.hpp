@@ -8,8 +8,6 @@
 
 #include "Symbol.hpp"
 
-// ---------------------------------------------------------------------------------------------------------------------
-
 namespace ECB
 {
     class Ecb;
@@ -51,7 +49,7 @@ namespace ECB
         static void handle_historical(struct mg_connection *a_conn, Server &a_server);
 
         /// Returns base symbol and list of symbols from query string.
-        static std::tuple<Symbol, Symbols> get_base_and_symbols(struct mg_connection *a_conn);
+        // static std::tuple<Symbol, Symbols> get_base_and_symbols(struct mg_connection *a_conn);
 
         /// Outputs result.
         void print_result(struct mg_connection *a_conn, const Result &);
