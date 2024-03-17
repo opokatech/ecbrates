@@ -14,17 +14,28 @@ namespace ECB
     Server::Server(const Ecb &a_ecb, uint16_t a_port) : m_ecb(a_ecb), m_port(a_port)
     {
         // create json writer
-        Json::StreamWriterBuilder sb;
+        // Json::StreamWriterBuilder sb;
 
-        sb.setDefaults(&sb.settings_);
-        sb.settings_["commentStyle"] = "None";
-        sb.settings_["precision"] = 6;
-        sb.settings_["precisionType"] = "decimal";
+        // sb.setDefaults(&sb.settings_);
+        // sb.settings_["commentStyle"] = "None";
+        // sb.settings_["precision"] = 6;
+        // sb.settings_["precisionType"] = "decimal";
 
-        m_json_writer.reset(sb.newStreamWriter());
+        // m_json_writer.reset(sb.newStreamWriter());
 
-        // create http server
-        create();
+        mg_mgr_init(&m_mgr);
+    }
+
+    bool Server::Initialize()
+    {
+        if (m_conn != nullptr)
+            return false;
+
+        const std::string port_string = std::to_string(m_port);
+
+        // m_server = mg_create_server(this, handler);
+        // const char *err = mg_set_option(m_server, "listening_port", port_string.str().c_str());
+        return true;
     }
 
     void Server::Start()
@@ -37,24 +48,6 @@ namespace ECB
         //     {
         //         mg_poll_server(m_server, 500);
         //         // MO::Log("poll...\n");
-        //     }
-        // }
-    }
-
-    void Server::create()
-    {
-        // if (m_server == nullptr)
-        // {
-        //     std::stringstream port_string;
-        //     port_string << m_port;
-
-        //     // Create and configure the server
-        //     m_server = mg_create_server(this, handler);
-        //     const char *err = mg_set_option(m_server, "listening_port", port_string.str().c_str());
-
-        //     if (err)
-        //     {
-        //         throw ECB::Exception::Bad_Port(err);
         //     }
         // }
     }
@@ -172,8 +165,8 @@ namespace ECB
         // }
     }
 
-    void Server::print_result(struct mg_connection *a_conn, const Result &a_result)
-    {
+    // void Server::print_result(struct mg_connection *a_conn, const Result &a_result)
+    // {
         // Json::Value ans;
 
         // if (a_result.historical)
@@ -207,5 +200,5 @@ namespace ECB
 
         // m_json_writer->write(ans, &ss);
         // mg_printf_data(a_conn, ss.str().c_str());
-    }
+    //}
 } // namespace ECB

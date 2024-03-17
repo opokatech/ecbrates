@@ -1,12 +1,11 @@
 #include "Data_Loader.hpp"
 #include "Ecb.hpp"
 #include "Logging.hpp"
+#include "Server.hpp"
 #include "Urls.hpp"
 #include "Version_Info.hpp"
 #include "options/Converters.hpp"
 #include "options/Options.hpp"
-// #include "Server.hpp"
-// #include "Exceptions.hpp"
 
 #include <csignal>
 #include <iostream>
@@ -89,7 +88,9 @@ int main(int argc, char *argv[])
     }
 
     // TODO move somewhere else
-    struct sigaction sa_int;
+    struct sigaction sa_int
+    {
+    };
     sa_int.sa_handler = sig_handler_int;
     sigemptyset(&sa_int.sa_mask);
     sa_int.sa_flags = 0;
@@ -99,7 +100,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    struct sigaction sa_usr1;
+    struct sigaction sa_usr1
+    {
+    };
     sa_usr1.sa_handler = sig_handler_usr1;
     sigemptyset(&sa_usr1.sa_mask);
     sa_usr1.sa_flags = 0;
@@ -113,8 +116,13 @@ int main(int argc, char *argv[])
     if (port > 0)
     {
         std::cout << "Starting server on port " << options.as_uint("port") << std::endl;
-        //     // start server if possible
-        //     ECB::Server server(ecb, port);
+        ECB::Server server(ecb, port);
+
+        if (!server.Initialize())
+        {
+            std::cerr << "Failed to initialize server\n";
+            return 1;
+        }
 
         //     // start thread for serving web requests
         //     std::thread web_thread([&server]() {
@@ -124,9 +132,9 @@ int main(int argc, char *argv[])
         //         server.Stop();
         //     });
 
-        while (keep_running)
+        while (keep_running != 0)
         {
-            if (load_more_data)
+            if (load_more_data != 0)
             {
                 load_more_data = 0;
                 std::cout << "load more data" << std::endl;
