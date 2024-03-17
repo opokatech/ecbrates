@@ -163,6 +163,7 @@ namespace ECB
         //     default:
         //         return MG_FALSE;
         // }
+        return MG_FALSE;
     }
 
     // void Server::print_result(struct mg_connection *a_conn, const Result &a_result)

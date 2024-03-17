@@ -13,7 +13,7 @@ include(cmake/version_info.cmake)
 include(cmake/compiler_flags.cmake)
 include(cmake/externals.cmake)
 
-add_subdirectory(externals)
+add_subdirectory(externals) # add external projects like mongoose
 
 add_subdirectory(src)
 

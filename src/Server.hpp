@@ -51,7 +51,7 @@ namespace ECB
         // std::unique_ptr<Json::StreamWriter> m_json_writer;
 
         // mongoose server manager
-        mg_mgr m_mgr;
+        mg_mgr m_mgr{};
         // mongoose connection
         mg_connection *m_conn = nullptr;
 

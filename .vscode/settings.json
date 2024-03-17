@@ -16,5 +16,6 @@
     "files.associations": {
         "iosfwd": "cpp"
     },
-    "testMate.cpp.test.executables": "{build}*/**/*{test}"
+    "testMate.cpp.test.executables": "{build}*/**/*{test}",
+    "cmake.buildDirectory": "${workspaceFolder}/build_debug_cpu_native"
 }
