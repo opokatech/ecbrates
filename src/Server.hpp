@@ -2,60 +2,40 @@
 
 #include "Symbol.hpp"
 
-#include "mongoose.h"
-// #include "json/forwards.h"
-
 #include <memory>
 #include <string>
 
+struct mg_connection; // forward declaration
+
 namespace ECB
 {
-    class Ecb;
+    class Ecb; // forward declaration
+    class Server_Impl;
 
+    // Singleton class to handle server requests.
     class Server
     {
     public:
-        Server(const Ecb &ecb, uint16_t port);
+        Server(const Server &) = delete;
+        Server &operator=(const Server &) = delete;
 
-        ~Server() { destroy(); }
+        static std::shared_ptr<Server> Instance();
 
-        /// Initialize structures, sets server port.
-        bool Initialize();
+        ~Server();
+
+        bool Initialize(std::shared_ptr<Ecb> ecb, uint16_t port, bool listen_all);
 
         /// Stars polling loop.
         void Start();
 
         /// Polling loop will end after calling stop().
-        void Stop() { m_running = false; }
+        void Stop();
 
     private:
-        /// Clean up the server.
-        void destroy();
+        Server();
 
-        /// Checks if request has format /api/yyyy-mm-dd
-        static bool is_historical_request(const char *);
+        std::unique_ptr<Server_Impl> m_impl;
 
-        /// Handle requests.
-        static int handler(struct mg_connection *a_conn, int a_event, void *a_data);
-
-        /// Handle latest api endpoint.
-        static void handle_latest(struct mg_connection *a_conn, Server &a_server);
-
-        /// Handle historical api endpoint.
-        static void handle_historical(struct mg_connection *a_conn, Server &a_server);
-
-        /// Outputs result.
-        // void print_result(struct mg_connection *a_conn, const Result &);
-
-        const Ecb &m_ecb;
-        // std::unique_ptr<Json::StreamWriter> m_json_writer;
-
-        // mongoose server manager
-        mg_mgr m_mgr{};
-        // mongoose connection
-        mg_connection *m_conn = nullptr;
-
-        uint16_t m_port = 0;
-        bool m_running = false;
+        static void handler(mg_connection *connection, int event, void *event_data);
     };
 } // namespace ECB

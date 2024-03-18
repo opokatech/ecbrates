@@ -29,16 +29,15 @@ _build:
 	@if [ "x${CPU}" != "xnative" ]; \
 	then \
 		cmake -S . -B ${BUILD_DIR} -G Ninja \
-			  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
 			  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake \
 			  -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-arm \
-			  -DECB_PARAM_TESTS=OFF \
 			  -DECB_PARAM_DEBUG=OFF \
+			  -DECB_PARAM_TESTS=OFF \
 			  -DECB_STATIC_BUILD=ON; \
 		cmake --build ${BUILD_DIR}; \
 	else \
 		cmake -S . -B ${BUILD_DIR} -G Ninja \
-			  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+			  -DECB_PARAM_DEBUG=${DEBUG} \
 			  -DECB_PARAM_TESTS=${TESTS} \
 			  -DECB_STATIC_BUILD=${STATIC}; \
 		cmake --build ${BUILD_DIR}; \
@@ -54,16 +53,15 @@ clang-format:
 
 .PHONY: release
 release:
-	${MAKE} BUILD_DIR=${BUILD_DIR}_release_cpu_${CPU} BUILD_TYPE=Release _build
+	${MAKE} BUILD_DIR=${BUILD_DIR}_release_cpu_${CPU} DEBUG=OFF _build
 	cmake --build ${BUILD_DIR}_release_cpu_${CPU} --target strip
 
 .PHONY: debug
 debug:
-	${MAKE} BUILD_DIR=${BUILD_DIR}_debug_cpu_${CPU} BUILD_TYPE=Debug _build
+	${MAKE} BUILD_DIR=${BUILD_DIR}_debug_cpu_${CPU} DEBUG=ON _build
 	cmake --build ${BUILD_DIR}_debug_cpu_${CPU}
 
 .PHONY: tests
 tests:
 	TESTS=ON ${MAKE} debug
 	./build_debug_cpu_native/bin/ecbrates_test
-	

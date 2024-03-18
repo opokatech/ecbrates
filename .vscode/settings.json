@@ -14,7 +14,10 @@
         "vararg"
     ],
     "files.associations": {
-        "iosfwd": "cpp"
+        ".clang-tidy": "yaml",
+        ".clang-format": "yaml",
+        "iosfwd": "cpp",
+        "string_view": "cpp"
     },
     "testMate.cpp.test.executables": "{build}*/**/*{test}",
     "cmake.buildDirectory": "${workspaceFolder}/build_debug_cpu_native"

@@ -1,21 +1,16 @@
 #include "Data_Loader.hpp"
 #include "Ecb.hpp"
 #include "Logging.hpp"
+#include "Main_Signals.hpp"
 #include "Server.hpp"
 #include "Urls.hpp"
 #include "Version_Info.hpp"
+
 #include "options/Converters.hpp"
 #include "options/Options.hpp"
 
-#include <csignal>
 #include <iostream>
 #include <thread>
-
-volatile std::sig_atomic_t keep_running = 1;
-volatile std::sig_atomic_t load_more_data = 0;
-
-void sig_handler_int(int) { keep_running = 0; }
-void sig_handler_usr1(int) { load_more_data = 1; }
 
 int main(int argc, char *argv[])
 {
@@ -41,6 +36,8 @@ int main(int argc, char *argv[])
         return num >= 1 && num <= 65535; // NOLINT
     });
 
+    options.add_flag("listen_all", "Listen on all interfaces");
+
     options.add_flag("help", "Show help");
 
     const bool parse_result = options.parse(argc, argv);
@@ -61,7 +58,7 @@ int main(int argc, char *argv[])
 
     std::cout << "Port: " << options.as_uint("port") << std::endl;
 
-    ECB::Ecb ecb;
+    auto ecb = std::make_shared<ECB::Ecb>();
 
     if (!options.as_string("xml_file").empty())
     {
@@ -71,9 +68,8 @@ int main(int argc, char *argv[])
         {
             std::cout << "Loaded " << data.size() << " records from file: " << options.as_string("xml_file")
                       << std::endl;
-            ecb.Add(data);
+            ecb->Add(data);
         }
-        ecb.Add(data);
     }
 
     if (!options.as_string("xml_url").empty())
@@ -83,70 +79,53 @@ int main(int argc, char *argv[])
         if (!data.empty())
         {
             std::cout << "Loaded " << data.size() << " records from url: " << options.as_string("xml_url") << std::endl;
-            ecb.Add(data);
+            ecb->Add(data);
         }
     }
 
-    // TODO move somewhere else
-    struct sigaction sa_int
-    {
-    };
-    sa_int.sa_handler = sig_handler_int;
-    sigemptyset(&sa_int.sa_mask);
-    sa_int.sa_flags = 0;
-    if (sigaction(SIGINT, &sa_int, nullptr) == -1)
-    {
-        std::cerr << "Failed to set SIGINT handler\n";
-        return 1;
-    }
-
-    struct sigaction sa_usr1
-    {
-    };
-    sa_usr1.sa_handler = sig_handler_usr1;
-    sigemptyset(&sa_usr1.sa_mask);
-    sa_usr1.sa_flags = 0;
-    if (sigaction(SIGUSR1, &sa_usr1, nullptr) == -1)
-    {
-        std::cerr << "Failed to set SIGUSR1 handler\n";
-        return 1;
-    }
+    Main_Signals::Setup();
 
     const uint16_t port = options.as_uint("port");
     if (port > 0)
     {
-        std::cout << "Starting server on port " << options.as_uint("port") << std::endl;
-        ECB::Server server(ecb, port);
+        const bool listen_all = options.as_bool("listen_all");
+        std::cout << "Starting server on port " << port << (listen_all ? " on all interfaces" : " on localhost only")
+                  << std::endl;
 
-        if (!server.Initialize())
+        std::shared_ptr<ECB::Server> server = ECB::Server::Instance();
+
+        if (!server->Initialize(ecb, port, listen_all))
         {
             std::cerr << "Failed to initialize server\n";
             return 1;
         }
 
-        //     // start thread for serving web requests
-        //     std::thread web_thread([&server]() {
-        //         ECB::Log("starting web server\n");
-        //         server.Start();
-        //         ECB::Log("stopping web server\n");
-        //         server.Stop();
-        //     });
+        // start thread for serving web requests
+        std::thread web_thread([&server]() {
+            ECB::Log("starting web server\n");
+            server->Start();
+            ECB::Log("stopping web server\n");
+            server->Stop();
+        });
 
-        while (keep_running != 0)
+        ECB::Log("starting loop until keep_running is non zero\n");
+        while (Main_Signals::Keep_Running())
         {
-            if (load_more_data != 0)
+            if (Main_Signals::Load_More_Data())
             {
-                load_more_data = 0;
+                Main_Signals::Reset_Load_More_Data();
                 std::cout << "load more data" << std::endl;
             }
             using namespace std::chrono_literals;
             std::this_thread::sleep_for(1s);
         }
 
-        // server.Stop();
-        // ECB::Log("Waiting for web thread to join...");
-        // web_thread.join();
-        // ECB::Log("done\n");
+        ECB::Log("stopping the web thread\n");
+        server->Stop();
+
+        ECB::Log("Waiting for web thread to join...");
+        web_thread.join();
+        ECB::Log("done\n");
     }
     else
     {

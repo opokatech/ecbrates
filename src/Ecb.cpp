@@ -15,7 +15,7 @@ namespace ECB
 
         Record ret = it->second;
 
-        if (ret.Get_Base() == base)
+        if (!base || ret.Get_Base() == base)
             return ret;
 
         // different base, so rebase

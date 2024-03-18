@@ -11,9 +11,9 @@ include(cmake/colors.cmake)
 include(cmake/options.cmake)
 include(cmake/version_info.cmake)
 include(cmake/compiler_flags.cmake)
-include(cmake/externals.cmake)
+include(cmake/externals.cmake) # add external projects via FetchContent
 
-add_subdirectory(externals) # add external projects like mongoose
+add_subdirectory(externals) # add external projects as submodules (mongoose)
 
 add_subdirectory(src)
 
