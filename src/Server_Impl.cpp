@@ -190,28 +190,4 @@ namespace ECB
         while (m_running)
             mg_mgr_poll(&m_mgr, 500);
     }
-
-    // std::tuple<Symbol, Symbols> Server::get_base_and_symbols(struct mg_connection *a_conn)
-    // {
-    //     char base_str[100], symbols_str[100];
-    //     bool base_set = false, symbols_set = false;
-
-    //     // Get form variables
-    //     base_set = (mg_get_var(a_conn, "base", base_str, sizeof(base_str)) > 0);
-    //     symbols_set = (mg_get_var(a_conn, "symbols", symbols_str, sizeof(symbols_str)) > 0);
-
-    //     Symbol base = DEFAULT_CURRENCY;
-    //     if (base_set)
-    //     {
-    //         base = base_str;
-    //     }
-
-    //     Symbols symbols;
-    //     if (symbols_set)
-    //     {
-    //         symbols = Utils::split(symbols_str, ',');
-    //     }
-
-    //     return {base, symbols};
-    // }
 } // namespace ECB
