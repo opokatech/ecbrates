@@ -35,9 +35,12 @@ _build:
 			  -DECB_PARAM_TESTS=OFF; \
 		cmake --build ${BUILD_DIR}; \
 	else \
-		cmake -S . -B ${BUILD_DIR} -G Ninja \
-			  -DECB_PARAM_DEBUG=${DEBUG} \
-			  -DECB_PARAM_TESTS=${TESTS}; \
+	    if [ ! -d ${BUILD_DIR} -o ! -x ${BUILD_DIR}/bin/ecb_tests ]; \
+		then \
+			cmake -S . -B ${BUILD_DIR} -G Ninja \
+		          -DECB_PARAM_DEBUG=${DEBUG} \
+		          -DECB_PARAM_TESTS=${TESTS}; \
+		fi; \
 		cmake --build ${BUILD_DIR}; \
 		rm -f compile_commands.json; \
 	    ln -s ${BUILD_DIR}/compile_commands.json; \

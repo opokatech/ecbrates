@@ -16,5 +16,6 @@ include(cmake/externals.cmake) # add external projects via FetchContent
 add_subdirectory(src)
 
 if(ECB_PARAM_TESTS)
+    enable_testing()
     add_subdirectory(tests)
 endif()
