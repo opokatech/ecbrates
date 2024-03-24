@@ -4,7 +4,7 @@
 
 namespace ECB
 {
-    std::optional<Record> Ecb::Get(const Time_Point &tp, std::optional<Symbol> base) const
+    std::optional<Record> Rates::Get(const Time_Point &tp, std::optional<Symbol> base) const
     {
         std::scoped_lock lock(m_mutex);
 
@@ -28,7 +28,7 @@ namespace ECB
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    // Result Ecb::get_data(const Timepoint_Prices &a_tpd, bool a_historical, std::optional<std::vector<Symbol>>
+    // Result Rates::get_data(const Timepoint_Prices &a_tpd, bool a_historical, std::optional<std::vector<Symbol>>
     // a_symbols,
     //                      std::optional<Symbol> a_base) const
     // {

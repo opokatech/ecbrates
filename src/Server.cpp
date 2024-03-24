@@ -12,9 +12,9 @@
 
 namespace ECB
 {
-    std::shared_ptr<Server> Server::Instance()
+    Server &Server::Instance()
     {
-        static std::shared_ptr<Server> instance(new Server());
+        static Server instance;
 
         return instance;
     }
@@ -24,7 +24,7 @@ namespace ECB
         // TODO
     }
 
-    bool Server::Initialize(std::shared_ptr<Ecb> ecb, uint16_t port, bool listen_all)
+    bool Server::Initialize(std::shared_ptr<Rates> ecb, uint16_t port, bool listen_all)
     {
         if (m_impl->m_conn != nullptr)
             return false;

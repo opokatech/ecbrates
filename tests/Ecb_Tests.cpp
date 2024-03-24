@@ -6,7 +6,7 @@ using namespace ECB;
 
 TEST(Ecb, Clear)
 {
-    Ecb ecb;
+    Rates ecb;
     ecb.Add(Record{Time_Point{"2020-01-01"}, "EUR", {{"USD", 1.0}, {"GBP", 0.9}}});
     ecb.Clear();
     EXPECT_EQ(0, ecb.Count());
@@ -14,7 +14,7 @@ TEST(Ecb, Clear)
 
 TEST(Ecb, Count)
 {
-    Ecb ecb;
+    Rates ecb;
     ecb.Add(Record{Time_Point{"2020-01-01"}, "EUR", {{"USD", 1.0}, {"GBP", 0.9}}});
     ecb.Add(Record{Time_Point{"2020-01-02"}, "EUR", {{"USD", 1.1}, {"GBP", 0.8}}});
     EXPECT_EQ(2, ecb.Count());
@@ -22,7 +22,7 @@ TEST(Ecb, Count)
 
 TEST(Ecb, Get_Last)
 {
-    Ecb ecb;
+    Rates ecb;
 
     EXPECT_FALSE(ecb.Get_Last().has_value());
 
@@ -37,7 +37,7 @@ TEST(Ecb, Get_Last)
 
 TEST(Ecb, Add)
 {
-    Ecb ecb;
+    Rates ecb;
     ecb.Add(Record{Time_Point{"2020-01-01"}, "EUR", {{"USD", 1.0}, {"GBP", 0.9}}});
     ecb.Add(Record{Time_Point{"2020-01-02"}, "EUR", {{"USD", 1.1}, {"GBP", 0.8}}});
     EXPECT_EQ(2, ecb.Count());
@@ -48,7 +48,7 @@ TEST(Ecb, Add)
 
 TEST(Ecb, Get)
 {
-    Ecb ecb;
+    Rates ecb;
 
     auto r1 = Record{Time_Point{"2020-01-01"}, "EUR", {{"USD", 0.91}, {"GBP", 1.17}}};
     auto r2 = Record{Time_Point{"2020-01-02"}, "EUR", {{"USD", 0.93}, {"GBP", 1.20}}};

@@ -13,7 +13,7 @@ namespace ECB
     /// retrieval. A single record consists of a time point, base and a set of values for different currencies. Records
     /// can be added to this object and returned in with a different base or with different currencies. Only a single
     /// record is always returned.
-    class Ecb
+    class Rates
     {
     public:
         /// Clears the local database.

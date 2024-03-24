@@ -9,7 +9,7 @@ struct mg_connection; // forward declaration
 
 namespace ECB
 {
-    class Ecb; // forward declaration
+    class Rates; // forward declaration
     class Server_Impl;
 
     // Singleton class to handle server requests.
@@ -19,11 +19,11 @@ namespace ECB
         Server(const Server &) = delete;
         Server &operator=(const Server &) = delete;
 
-        static std::shared_ptr<Server> Instance();
+        static Server& Instance();
 
         ~Server();
 
-        bool Initialize(std::shared_ptr<Ecb> ecb, uint16_t port, bool listen_all);
+        bool Initialize(std::shared_ptr<Rates> ecb, uint16_t port, bool listen_all);
 
         /// Stars polling loop.
         void Start();

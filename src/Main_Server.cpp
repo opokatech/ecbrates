@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
     std::cout << "Port: " << options.as_uint("port") << std::endl;
 
-    auto ecb = std::make_shared<ECB::Ecb>();
+    auto ecb = std::make_shared<ECB::Rates>();
 
     if (!options.as_string("xml_file").empty())
     {
@@ -92,9 +92,9 @@ int main(int argc, char *argv[])
         std::cout << "Starting server on port " << port << (listen_all ? " on all interfaces" : " on localhost only")
                   << std::endl;
 
-        std::shared_ptr<ECB::Server> server = ECB::Server::Instance();
+        auto &server = ECB::Server::Instance();
 
-        if (!server->Initialize(ecb, port, listen_all))
+        if (!server.Initialize(ecb, port, listen_all))
         {
             std::cerr << "Failed to initialize server\n";
             return 1;
@@ -103,9 +103,9 @@ int main(int argc, char *argv[])
         // start thread for serving web requests
         std::thread web_thread([&server]() {
             ECB::Log("starting web server\n");
-            server->Start();
+            server.Start();
             ECB::Log("stopping web server\n");
-            server->Stop();
+            server.Stop();
         });
 
         ECB::Log("starting loop until keep_running is non zero\n");
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
         }
 
         ECB::Log("stopping the web thread\n");
-        server->Stop();
+        server.Stop();
 
         ECB::Log("Waiting for web thread to join...");
         web_thread.join();

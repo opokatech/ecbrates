@@ -7,7 +7,7 @@
 
 namespace ECB
 {
-    class Ecb;
+    class Rates;
     class Record;
 
     class Server_Impl
@@ -28,6 +28,6 @@ namespace ECB
         struct mg_connection *m_conn = nullptr;
         uint16_t m_port = 0;
         bool m_running = false;
-        std::shared_ptr<Ecb> m_ecb;
+        std::shared_ptr<Rates> m_ecb;
     };
 } // namespace ECB
