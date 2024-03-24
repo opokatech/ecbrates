@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Currency_Value.hpp"
-#include "Symbol.hpp"
 #include "Time_Point.hpp"
 
 #include <vector>

@@ -1,6 +1,5 @@
 #include "Rates.hpp"
 #include "Logging.hpp"
-#include "Utils.hpp"
 
 namespace ECB
 {

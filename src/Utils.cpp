@@ -1,8 +1,7 @@
+#include "Utils.hpp"
+
 #include <algorithm>
 #include <sstream>
-#include <vector>
-
-#include "Utils.hpp"
 
 namespace ECB
 {
