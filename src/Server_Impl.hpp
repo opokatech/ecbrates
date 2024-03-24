@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Symbol.hpp"
+
 #include "mongoose.h"
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace ECB
 {
@@ -26,7 +29,7 @@ namespace ECB
         /// Checks if request has format /api/dddd-dd-dd
         bool is_historical_request(const mg_str *) const;
 
-        std::string print_record(const Record &) const;
+        std::string print_record(const Record &, const std::vector<Symbol> &) const;
         std::string print_error(const std::string &msg) const;
 
         struct mg_mgr m_mgr = {};

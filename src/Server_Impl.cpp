@@ -5,6 +5,8 @@
 
 #include "json/json.h"
 
+#include <algorithm>
+
 namespace ECB
 {
     Server_Impl::Server_Impl() { mg_mgr_init(&m_mgr); }
@@ -55,7 +57,7 @@ namespace ECB
         return true;
     }
 
-    std::string Server_Impl::print_record(const Record &result) const
+    std::string Server_Impl::print_record(const Record &result, const std::vector<Symbol> &symbols) const
     {
         Json::Value ans;
 
@@ -65,8 +67,21 @@ namespace ECB
         ans["rates"] = Json::Value();
         auto &ans_rates = ans["rates"]; // alias
 
-        for (const auto &[sym, price]: result.Get_Rates())
-            ans_rates[sym] = price;
+        if (symbols.empty())
+        {
+            for (const auto &[sym, price]: result.Get_Rates())
+                ans_rates[sym] = price;
+        }
+        else
+        {
+            for (const auto &[sym, price]: result.Get_Rates())
+            {
+                // if symbol is not in the list, skip it
+                if (std::find(symbols.begin(), symbols.end(), sym) == symbols.end())
+                    continue;
+                ans_rates[sym] = price;
+            }
+        }
 
         std::stringstream ss;
 
@@ -129,18 +144,30 @@ namespace ECB
         static const mg_str BASE = mg_str("base");
         std::optional<std::string> base;
         mg_str var_base = mg_http_var(message->query, BASE);
-        Log("base: %u, %s\n", var_base.len, var_base.ptr);
         if (var_base.len > 0)
         {
-            base = std::string(var_base.ptr, std::max<size_t>(var_base.len, 3u));
+            base = std::string(var_base.ptr, std::min<size_t>(var_base.len, 3u));
             Utils::uppercase(*base);
+            Log("Base: %s\n", base->c_str());
+        }
+
+        static const mg_str SYMBOLS = mg_str("symbols");
+        static constexpr size_t MAX_SYMBOLS_LEN = 4 * 50; // 4 chars per symbol "eur,"
+        std::vector<Symbol> symbols;
+        mg_str var_symbols = mg_http_var(message->query, SYMBOLS);
+        if (var_symbols.len > 0)
+        {
+            auto symbols_str = std::string(var_symbols.ptr, std::min<size_t>(var_symbols.len, MAX_SYMBOLS_LEN));
+            Utils::uppercase(symbols_str);
+            symbols = Utils::split(symbols_str, ',');
+            Log("Symbols: %s\n", symbols_str.c_str());
         }
 
         // get record for the given time point
         const auto record = m_rates->Get(tp.value(), base);
         if (record)
         {
-            const auto json_str = print_record(record.value());
+            const auto json_str = print_record(record.value(), symbols);
             mg_http_reply(connection, 200, "Content-Type: application/json\r\n", json_str.c_str());
         }
         else
