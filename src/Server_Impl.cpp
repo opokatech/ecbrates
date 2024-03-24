@@ -1,4 +1,5 @@
 #include "Server_Impl.hpp"
+#include "Logging.hpp"
 #include "Rates.hpp"
 #include "Utils.hpp"
 
@@ -9,6 +10,21 @@ namespace ECB
     Server_Impl::Server_Impl() { mg_mgr_init(&m_mgr); }
 
     Server_Impl::~Server_Impl() { mg_mgr_free(&m_mgr); }
+
+    bool Server_Impl::initialize(std::shared_ptr<Rates> rates, const std::string &listen_address)
+    {
+        if (m_conn != nullptr) // already created
+        {
+            Log("Server_Impl::initialize: already initialized\n");
+            return false;
+        }
+
+        m_rates = rates;
+
+        m_conn = mg_http_listen(&m_mgr, listen_address.c_str(), handler, this);
+
+        return m_conn != nullptr;
+    }
 
     bool Server_Impl::is_historical_request(const mg_str *uri) const
     {
@@ -70,6 +86,17 @@ namespace ECB
         return ss.str();
     }
 
+    void Server_Impl::handler(mg_connection *connection, int event, void *event_data)
+    {
+        if (event == MG_EV_HTTP_MSG)
+        {
+            mg_http_message *hm = reinterpret_cast<mg_http_message *>(event_data);
+            Server_Impl *impl = reinterpret_cast<Server_Impl *>(connection->fn_data);
+
+            impl->handle(connection, hm);
+        }
+    }
+
     void Server_Impl::handle(mg_connection *connection, mg_http_message *message)
     {
         const bool is_latest = mg_http_match_uri(message, "/api/latest");
@@ -87,7 +114,7 @@ namespace ECB
         // get time point
         const std::optional<Time_Point> tp =
             (is_historical) ? std::make_optional(Time_Point{std::string{message->uri.ptr + 5, message->uri.len - 5}})
-                            : m_ecb->Get_Last();
+                            : m_rates->Get_Last();
 
         if (!tp.has_value())
         {
@@ -108,7 +135,7 @@ namespace ECB
             Utils::uppercase(*base);
         }
 
-        const auto record = m_ecb->Get(tp.value(), base);
+        const auto record = m_rates->Get(tp.value(), base);
         if (record)
         {
             const auto json_str = print_record(record.value());
@@ -119,6 +146,20 @@ namespace ECB
             mg_http_reply(connection, 404, "Content-Type: application/json\r\n",
                           print_error("Record for given time stamp not found").c_str());
         }
+    }
+
+    void Server_Impl::start_polling()
+    {
+        if (m_conn == nullptr || m_running)
+        {
+            Log("Server_Impl::start_polling: already running\n");
+            return;
+        }
+
+        Log("Starting loop\n");
+        m_running = true;
+        while (m_running)
+            mg_mgr_poll(&m_mgr, 500);
     }
 
     // std::tuple<Symbol, Symbols> Server::get_base_and_symbols(struct mg_connection *a_conn)

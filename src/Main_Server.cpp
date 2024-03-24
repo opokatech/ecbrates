@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
     std::cout << "Port: " << options.as_uint("port") << std::endl;
 
-    auto ecb = std::make_shared<ECB::Rates>();
+    auto rates = std::make_shared<ECB::Rates>();
 
     if (!options.as_string("xml_file").empty())
     {
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         {
             std::cout << "Loaded " << data.size() << " records from file: " << options.as_string("xml_file")
                       << std::endl;
-            ecb->Add(data);
+            rates->Add(data);
         }
     }
 
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
         if (!data.empty())
         {
             std::cout << "Loaded " << data.size() << " records from url: " << options.as_string("xml_url") << std::endl;
-            ecb->Add(data);
+            rates->Add(data);
         }
     }
 
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 
         auto &server = ECB::Server::Instance();
 
-        if (!server.Initialize(ecb, port, listen_all))
+        if (!server.Initialize(rates, port, listen_all))
         {
             std::cerr << "Failed to initialize server\n";
             return 1;
