@@ -13,8 +13,6 @@ include(cmake/version_info.cmake)
 include(cmake/compiler_flags.cmake)
 include(cmake/externals.cmake) # add external projects via FetchContent
 
-add_subdirectory(externals) # add external projects as submodules (mongoose)
-
 add_subdirectory(src)
 
 if(ECB_PARAM_TESTS)

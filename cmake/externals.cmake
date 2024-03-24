@@ -51,6 +51,19 @@ message(STATUS "${ColorYellow}Fetching jsoncpp...${ColorReset}")
 FetchContent_MakeAvailable(jsoncpp)
 message(STATUS "${ColorGreen}jsoncpp ready${ColorReset}")
 
+# MONGOOSE
+FetchContent_Declare(
+    mongoose
+    GIT_REPOSITORY https://github.com/cesanta/mongoose
+    GIT_TAG 7.13
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE)
+message(STATUS "${ColorYellow}Fetching mongoose...${ColorReset}")
+FetchContent_MakeAvailable(mongoose)
+message(STATUS "${ColorGreen}mongoose ready${ColorReset}")
+add_library(mongoose STATIC ${mongoose_SOURCE_DIR}/mongoose.c)
+target_include_directories(mongoose PUBLIC ${mongoose_SOURCE_DIR})
+
 # GOOGLE TEST
 if(ECB_PARAM_TESTS)
     FetchContent_Declare(
