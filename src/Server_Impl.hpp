@@ -18,11 +18,11 @@ namespace ECB
 
         bool initialize(std::shared_ptr<Rates> rates, const std::string &listen_address);
 
-        void handle(mg_connection *connection, mg_http_message *message);
-
         void start_polling();
         void stop_polling() { m_running = false; }
 
+    private:
+        void handle(mg_connection *connection, mg_http_message *message);
         /// Checks if request has format /api/dddd-dd-dd
         bool is_historical_request(const mg_str *) const;
 
@@ -34,7 +34,7 @@ namespace ECB
         bool m_running = false;
         std::shared_ptr<Rates> m_rates;
 
-    private:
+        // must be static to be used as a callback for mongoose
         static void handler(mg_connection *connection, int event, void *event_data);
     };
 } // namespace ECB

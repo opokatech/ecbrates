@@ -118,7 +118,8 @@ namespace ECB
 
         if (!tp.has_value())
         {
-            mg_http_reply(connection, 404, "Content-Type: application/json\r\n", print_error("No record").c_str());
+            mg_http_reply(connection, 404, "Content-Type: application/json\r\n",
+                          print_error("Time point not found").c_str());
             return;
         }
 
@@ -128,13 +129,14 @@ namespace ECB
         static const mg_str BASE = mg_str("base");
         std::optional<std::string> base;
         mg_str var_base = mg_http_var(message->query, BASE);
-        printf("base: %d, %s\n", (int)var_base.len, var_base.ptr);
+        Log("base: %u, %s\n", var_base.len, var_base.ptr);
         if (var_base.len > 0)
         {
             base = std::string(var_base.ptr, std::max<size_t>(var_base.len, 3u));
             Utils::uppercase(*base);
         }
 
+        // get record for the given time point
         const auto record = m_rates->Get(tp.value(), base);
         if (record)
         {
