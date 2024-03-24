@@ -32,13 +32,12 @@ int main(int argc, char *argv[])
     options.add_optional("signal_xml_url", "On signal load more data from this url", ECB::ECB_URL_DAILY,
                          [](const std::string &value) { return !value.empty(); });
 
-    options.add_optional("port", "HTTP port to listen on", "0", [](const std::string &value) {
+    options.add_mandatory("port", "HTTP port to listen on", [](const std::string &value) {
         uint32_t num = Options::as_uint(value);
         return num >= 1 && num <= 65535; // NOLINT
     });
 
     options.add_flag("listen_all", "Listen on all interfaces");
-
     options.add_flag("help", "Show help");
 
     const bool parse_result = options.parse(argc, argv);
@@ -84,52 +83,48 @@ int main(int argc, char *argv[])
     Main_Signals::Setup(); // handling SIGINT and SIGUSR1
 
     const uint16_t port = options.as_uint("port");
-    if (port > 0)
+    const bool listen_all = options.as_bool("listen_all");
+    cout << "Starting server on port " << port << (listen_all ? " on all interfaces" : " on localhost only") << endl;
+
+    auto &server = ECB::Server::Instance();
+
+    if (!server.Initialize(rates, port, listen_all))
     {
-        const bool listen_all = options.as_bool("listen_all");
-        cout << "Starting server on port " << port << (listen_all ? " on all interfaces" : " on localhost only")
-             << endl;
-
-        auto &server = ECB::Server::Instance();
-
-        if (!server.Initialize(rates, port, listen_all))
-        {
-            std::cerr << "Failed to initialize server\n";
-            return 1;
-        }
-
-        // start thread for serving web requests
-        std::thread web_thread([&server]() {
-            ECB::Log("Starting web server in separate thread\n");
-            server.Start();
-            ECB::Log("Stopping web server\n");
-            server.Stop();
-        });
-
-        ECB::Log("Starting loop in main thread\n");
-        while (Main_Signals::Keep_Running())
-        {
-            if (Main_Signals::Load_More_Data())
-            {
-                Main_Signals::Reset_Load_More_Data();
-                const auto data = ECB::Data_Loader::Load_From_Url(options.as_string("signal_xml_url"));
-                if (!data.empty())
-                {
-                    ECB::Log("Loaded %u records.\n", data.size());
-                    rates->Add(data);
-                }
-            }
-            using namespace std::chrono_literals;
-            std::this_thread::sleep_for(1s);
-        }
-
-        ECB::Log("Stopping the web thread\n");
-        server.Stop();
-
-        ECB::Log("Waiting for web thread to join...");
-        web_thread.join();
-        ECB::Log("done\n");
+        std::cerr << "Failed to initialize server\n";
+        return 1;
     }
+
+    // start thread for serving web requests
+    std::thread web_thread([&server]() {
+        ECB::Log("Starting web server in separate thread\n");
+        server.Start();
+        ECB::Log("Stopping web server\n");
+        server.Stop();
+    });
+
+    ECB::Log("Starting loop in main thread\n");
+    while (Main_Signals::Keep_Running())
+    {
+        if (Main_Signals::Load_More_Data())
+        {
+            Main_Signals::Reset_Load_More_Data();
+            const auto data = ECB::Data_Loader::Load_From_Url(options.as_string("signal_xml_url"));
+            if (!data.empty())
+            {
+                ECB::Log("Loaded %u records.\n", data.size());
+                rates->Add(data);
+            }
+        }
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(1s);
+    }
+
+    ECB::Log("Stopping the web thread\n");
+    server.Stop();
+
+    ECB::Log("Waiting for web thread to join...");
+    web_thread.join();
+    ECB::Log("done\n");
 
     return 0;
 }

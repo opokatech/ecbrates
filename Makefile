@@ -16,7 +16,8 @@ help:
 	@echo " tests      : as debug but with tests"
 	@echo ""
 	@echo "Options:"
-	@echo " CPU    : set this for crosscompile for armhf (only). If set it implies STATIC and NO TESTS"
+	@echo " CPU    : TODO - work in progress."
+	@echo "          Set this for crosscompile for armhf (only). If set it implies STATIC and NO TESTS"
 	@echo "          Needed debian packagees: g++-arm-linux-gnueabihf, libssl-dev:armhf, qemu-user"
 	@echo "          Examples:"
 	@echo "          RaspberryPi3 - cortex-a53"
@@ -48,17 +49,16 @@ clean:
 clang-format:
 	clang-format -i src/*pp tests/*pp
 
-.PHONY: release
 release:
 	${MAKE} BUILD_DIR=${BUILD_DIR}_release_cpu_${CPU} DEBUG=OFF _build
 	cmake --build ${BUILD_DIR}_release_cpu_${CPU} --target strip
 
-.PHONY: debug
 debug:
 	${MAKE} BUILD_DIR=${BUILD_DIR}_debug_cpu_${CPU} DEBUG=ON _build
 	cmake --build ${BUILD_DIR}_debug_cpu_${CPU}
 
-.PHONY: tests
 tests:
 	TESTS=ON ${MAKE} debug
 	./build_debug_cpu_native/bin/ecb_tests
+
+.PHONY: _build clean clang-format release debug tests

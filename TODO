@@ -2,4 +2,6 @@
 - github actions for tests
 - target with asan
 - examples of configuration (nginx, cron)
-
+- json output - no so verbose if needed
+- json output - floats limited to 4 decimal places
+- make cross compilation work again
