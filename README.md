@@ -1,12 +1,16 @@
 # ECB rates
 
-This repository hosts a few utility programs for handling historical currencies rates.
+This repository hosts a few utility programs for handling historical currencies rates obtained from
+the [European Central Bank](https://www.ecb.europa.eu/stats/eurofxref/).
 
-One of them is a simple http server which serves data as JSON.
-Data is taken from [European Central Bank](https://www.ecb.europa.eu/stats/eurofxref/) and updated periodically.
+One (`ecb_fetcher`) can fetch either historical or daily data, show it on the screen and optionally save as XML to a file.
 
-It was written just for fun to test some C++ 17 features and libraries back in 2018 and a updated
-a bit a of 2024.
+Another one is a simple http server which serves data as JSON.
+It can load initial data from a given file or from give URL (there are reasonable defaults).
+On receiving `SIGUSR1` it can fetch more data from given URL (again, there is a default address for it). This can be used
+in a cron script to do it periodically.
+
+It was written just for fun back in 2018 to test some C++ 17 features and libraries. And refactored in 2024.
 
 ## Quick start
 
