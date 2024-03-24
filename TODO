@@ -5,3 +5,4 @@
 - json output - no so verbose if needed
 - json output - floats limited to 4 decimal places
 - make cross compilation work again
+- makefile - don't reconfigure cmake when not needed (make debug, make tests)
