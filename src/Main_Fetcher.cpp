@@ -10,6 +10,8 @@
 
 int main(int argc, char *argv[])
 {
+    using std::cout, std::endl;
+
     Options::Options options;
 
     options.add_mandatory("mode", "Fetch historical or daily data (hist or daily)", [](const std::string &param) {
@@ -35,12 +37,12 @@ int main(int argc, char *argv[])
 
     if (!parse_result || show_help)
     {
-        std::cout << "ECB data fetcher" << std::endl;
-        std::cout << "  Version: " << ECB::Version_Info::HASH << std::endl;
-        std::cout << "  Date   : " << ECB::Version_Info::DATE << std::endl;
-        std::cout << std::endl;
-        std::cout << "Usage: " << argv[0] << " [options]" << std::endl;
-        std::cout << options.get_possible_options() << std::endl;
+        cout << "ECB data fetcher" << endl;
+        cout << "  Version: " << ECB::Version_Info::HASH << endl;
+        cout << "  Date   : " << ECB::Version_Info::DATE << endl;
+        cout << endl;
+        cout << "Usage: " << argv[0] << " [options]" << endl;
+        cout << options.get_possible_options() << endl;
 
         return -1;
     }
@@ -49,8 +51,8 @@ int main(int argc, char *argv[])
     const std::string &url = (hist_mode) ? options.as_string("hist_url") : options.as_string("daily_url");
     const std::string &save_to_file = options.as_string("save_file");
 
-    std::cout << "Getting " << (hist_mode ? "historical" : "daily") << " data"
-              << (!save_to_file.empty() ? " and saving to " + save_to_file : "") << std::endl;
+    cout << "Getting " << (hist_mode ? "historical" : "daily") << " data"
+         << (!save_to_file.empty() ? " and saving to " + save_to_file : "") << endl;
 
     const auto records = ECB::Data_Loader::Load_From_Url(url, save_to_file);
 
@@ -61,9 +63,9 @@ int main(int argc, char *argv[])
     }
 
     for (const auto &record: records)
-        std::cout << record.Get_As_String_Without_Base() << std::endl;
+        cout << record.Get_As_String_Without_Base() << endl;
 
-    std::cout << "Got " << records.size() << " records\n";
+    cout << "Got " << records.size() << " records\n";
 
     return 0;
 }

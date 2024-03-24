@@ -11,7 +11,7 @@ namespace ECB
 
         if (value.length() != TEMPLATE.length())
         {
-            Log("Initializing Time_Point with a string of length %u failed", value.length());
+            Log("Initializing Time_Point with a string of length %u failed\n", value.length());
             return;
         }
 
@@ -29,7 +29,7 @@ namespace ECB
             }
             else
             {
-                Log("Initializing Time_Point with a string '%s' failed", value.c_str());
+                Log("Initializing Time_Point with a string '%s' failed\n", value.c_str());
                 return;
             }
         }

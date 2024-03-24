@@ -14,13 +14,14 @@
 
 int main(int argc, char *argv[])
 {
+    using std::cout, std::endl;
+
     Options::Options options;
 
     // this service allows to
     // - load any data file from file or url - to have something to serve,
     // - serve the data via http server on a given TCP/IP port,
     // - on signal load more data from the url,
-    // - if port is not given then it will serve on the console
 
     options.add_optional("xml_file", "Load data from a file at start", "",
                          [](const std::string &value) { return !value.empty(); });
@@ -46,12 +47,12 @@ int main(int argc, char *argv[])
 
     if (!parse_result || show_help)
     {
-        std::cout << "ECB Exchange Rates Server" << std::endl;
-        std::cout << "  Version: " << ECB::Version_Info::HASH << std::endl;
-        std::cout << "  Date   : " << ECB::Version_Info::DATE << std::endl;
-        std::cout << std::endl;
-        std::cout << "Usage: " << argv[0] << " [options]" << std::endl;
-        std::cout << options.get_possible_options() << std::endl;
+        cout << "ECB Exchange Rates Server" << endl;
+        cout << "  Version: " << ECB::Version_Info::HASH << endl;
+        cout << "  Date   : " << ECB::Version_Info::DATE << endl;
+        cout << endl;
+        cout << "Usage: " << argv[0] << " [options]" << endl;
+        cout << options.get_possible_options() << endl;
 
         return -1;
     }
@@ -64,8 +65,7 @@ int main(int argc, char *argv[])
 
         if (!data.empty())
         {
-            std::cout << "Loaded " << data.size() << " records from file: " << options.as_string("xml_file")
-                      << std::endl;
+            cout << "Loaded " << data.size() << " records from file: " << options.as_string("xml_file") << endl;
             rates->Add(data);
         }
     }
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
         if (!data.empty())
         {
-            std::cout << "Loaded " << data.size() << " records from url: " << options.as_string("xml_url") << std::endl;
+            cout << "Loaded " << data.size() << " records from url: " << options.as_string("xml_url") << endl;
             rates->Add(data);
         }
     }
@@ -87,8 +87,8 @@ int main(int argc, char *argv[])
     if (port > 0)
     {
         const bool listen_all = options.as_bool("listen_all");
-        std::cout << "Starting server on port " << port << (listen_all ? " on all interfaces" : " on localhost only")
-                  << std::endl;
+        cout << "Starting server on port " << port << (listen_all ? " on all interfaces" : " on localhost only")
+             << endl;
 
         auto &server = ECB::Server::Instance();
 

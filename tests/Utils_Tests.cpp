@@ -3,12 +3,11 @@
 
 #include "gtest/gtest.h"
 
-#include "Symbol.hpp"
 #include "Utils.hpp"
 
 TEST(Utils, SplitString)
 {
-    ECB::Symbols out;
+    std::vector<std::string> out;
 
     out = ECB::Utils::split("", ' ');
     ASSERT_EQ(out.size(), 0);

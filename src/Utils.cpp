@@ -5,11 +5,11 @@
 
 namespace ECB
 {
-    std::vector<Symbol> Utils::split(const std::string &a_string, char a_delimiter)
+    std::vector<std::string> Utils::split(const std::string &a_string, char a_delimiter)
     {
         std::stringstream ss(a_string);
         std::string item;
-        std::vector<Symbol> elems;
+        std::vector<std::string> elems;
 
         while (std::getline(ss, item, a_delimiter))
         {
