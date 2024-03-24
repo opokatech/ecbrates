@@ -7,4 +7,4 @@
 - make cross compilation work again
 - consider removing ECB namespace
 - consider using spdlog
-- extra headers for better caching
+- extra headers in returning json for better caching
