@@ -4,7 +4,6 @@ DEBUG_SUFFIX=_debug
 
 CPU?=native
 TESTS?=OFF
-STATIC?=OFF
 
 MAKEFLAGS+= --no-print-directory
 
@@ -23,7 +22,6 @@ help:
 	@echo "          RaspberryPi3 - cortex-a53"
 	@echo "          BananPiPro   - cortex-a7"
 	@echo " TESTS  : ON|OFF build google tests (current value: ${TESTS})"
-	@echo " STATIC : ON|OFF links statically (current value: ${STATIC})"
 
 _build:
 	@if [ "x${CPU}" != "xnative" ]; \
@@ -33,14 +31,12 @@ _build:
 			  -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-arm \
 			  -DECB_PARAM_CPU=${CPU} \
 			  -DECB_PARAM_DEBUG=OFF \
-			  -DECB_PARAM_TESTS=OFF \
-			  -DECB_STATIC_BUILD=ON; \
+			  -DECB_PARAM_TESTS=OFF; \
 		cmake --build ${BUILD_DIR}; \
 	else \
 		cmake -S . -B ${BUILD_DIR} -G Ninja \
 			  -DECB_PARAM_DEBUG=${DEBUG} \
-			  -DECB_PARAM_TESTS=${TESTS} \
-			  -DECB_STATIC_BUILD=${STATIC}; \
+			  -DECB_PARAM_TESTS=${TESTS}; \
 		cmake --build ${BUILD_DIR}; \
 		rm -f compile_commands.json; \
 	    ln -s ${BUILD_DIR}/compile_commands.json; \
