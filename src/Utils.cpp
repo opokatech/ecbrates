@@ -13,7 +13,7 @@ namespace ECB
 
         while (std::getline(ss, item, a_delimiter))
         {
-            elems.push_back(item.c_str());
+            elems.emplace_back(item.c_str());
         }
         return elems;
     }

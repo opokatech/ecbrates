@@ -22,5 +22,8 @@
         "iomanip": "cpp"
     },
     "testMate.cpp.test.executables": "build_*/**/*_tests",
-    "cmake.buildDirectory": "${workspaceFolder}/build_debug_cpu_native"
+    "cmake.buildDirectory": "${workspaceFolder}/build_debug_cpu_native",
+    "C_Cpp.codeAnalysis.exclude": {
+        "**/build_*/**": true,
+    },
 }

@@ -105,8 +105,8 @@ namespace ECB
     {
         if (event == MG_EV_HTTP_MSG)
         {
-            mg_http_message *hm = reinterpret_cast<mg_http_message *>(event_data);
-            Server_Impl *impl = reinterpret_cast<Server_Impl *>(connection->fn_data);
+            auto *hm = reinterpret_cast<mg_http_message *>(event_data);
+            auto *impl = reinterpret_cast<Server_Impl *>(connection->fn_data);
 
             impl->handle(connection, hm);
         }
@@ -152,7 +152,7 @@ namespace ECB
         }
 
         static const mg_str SYMBOLS = mg_str("symbols");
-        static constexpr size_t MAX_SYMBOLS_LEN = 4 * 50; // 4 chars per symbol "eur,"
+        static constexpr uint32_t MAX_SYMBOLS_LEN = 4u * 50u; // 4 chars per symbol "eur,"
         std::vector<Symbol> symbols;
         mg_str var_symbols = mg_http_var(message->query, SYMBOLS);
         if (var_symbols.len > 0)

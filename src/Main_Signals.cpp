@@ -2,8 +2,8 @@
 
 #include <csignal>
 
-volatile bool Main_Signals::m_keep_running = true;
-volatile bool Main_Signals::m_load_more_data = false;
+volatile bool Main_Signals::m_keep_running = true; // NOLINT
+volatile bool Main_Signals::m_load_more_data = false; // NOLINT
 
 void Main_Signals::Setup()
 {
