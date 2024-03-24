@@ -1,4 +1,4 @@
-add_library(ecb_lib STATIC Ecb.cpp Logging.cpp Record.cpp Time_Point.cpp Utils.cpp)
+add_library(ecb_lib STATIC Logging.cpp Rates.cpp Record.cpp Time_Point.cpp Utils.cpp)
 target_include_directories(ecb_lib PUBLIC .)
 target_link_libraries(ecb_lib PRIVATE ecb_compiler_flags)
 

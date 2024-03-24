@@ -1,10 +1,10 @@
 #include "gtest/gtest.h"
 
-#include "Ecb.hpp"
+#include "Rates.hpp"
 
 using namespace ECB;
 
-TEST(Ecb, Clear)
+TEST(Rates, Clear)
 {
     Rates ecb;
     ecb.Add(Record{Time_Point{"2020-01-01"}, "EUR", {{"USD", 1.0}, {"GBP", 0.9}}});
@@ -12,7 +12,7 @@ TEST(Ecb, Clear)
     EXPECT_EQ(0, ecb.Count());
 }
 
-TEST(Ecb, Count)
+TEST(Rates, Count)
 {
     Rates ecb;
     ecb.Add(Record{Time_Point{"2020-01-01"}, "EUR", {{"USD", 1.0}, {"GBP", 0.9}}});
@@ -20,7 +20,7 @@ TEST(Ecb, Count)
     EXPECT_EQ(2, ecb.Count());
 }
 
-TEST(Ecb, Get_Last)
+TEST(Rates, Get_Last)
 {
     Rates ecb;
 
@@ -35,7 +35,7 @@ TEST(Ecb, Get_Last)
     EXPECT_EQ(rec.value(), Time_Point{"2020-01-03"});
 }
 
-TEST(Ecb, Add)
+TEST(Rates, Add)
 {
     Rates ecb;
     ecb.Add(Record{Time_Point{"2020-01-01"}, "EUR", {{"USD", 1.0}, {"GBP", 0.9}}});
@@ -46,7 +46,7 @@ TEST(Ecb, Add)
     EXPECT_EQ(2, ecb.Count());
 }
 
-TEST(Ecb, Get)
+TEST(Rates, Get)
 {
     Rates ecb;
 

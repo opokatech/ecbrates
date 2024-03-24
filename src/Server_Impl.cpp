@@ -1,15 +1,12 @@
 #include "Server_Impl.hpp"
-#include "Ecb.hpp"
+#include "Rates.hpp"
 #include "Utils.hpp"
 
 #include "json/json.h"
 
 namespace ECB
 {
-    Server_Impl::Server_Impl()
-    {
-        mg_mgr_init(&m_mgr);
-    }
+    Server_Impl::Server_Impl() { mg_mgr_init(&m_mgr); }
 
     Server_Impl::~Server_Impl() { mg_mgr_free(&m_mgr); }
 
