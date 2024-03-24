@@ -31,6 +31,7 @@ _build:
 		cmake -S . -B ${BUILD_DIR} -G Ninja \
 			  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake \
 			  -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-arm \
+			  -DECB_PARAM_CPU=${CPU} \
 			  -DECB_PARAM_DEBUG=OFF \
 			  -DECB_PARAM_TESTS=OFF \
 			  -DECB_STATIC_BUILD=ON; \
