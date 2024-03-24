@@ -6,3 +6,5 @@
 - json output - floats limited to 4 decimal places
 - make cross compilation work again
 - makefile - don't reconfigure cmake when not needed (make debug, make tests)
+- consider removing ECB namespace
+- consider using spdlog
