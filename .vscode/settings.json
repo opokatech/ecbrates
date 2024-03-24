@@ -20,6 +20,6 @@
         "string_view": "cpp",
         "iomanip": "cpp"
     },
-    "testMate.cpp.test.executables": "{build}*/**/*{test}",
+    "testMate.cpp.test.executables": "build_*/**/*_tests",
     "cmake.buildDirectory": "${workspaceFolder}/build_debug_cpu_native"
 }
