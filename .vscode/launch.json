@@ -8,7 +8,7 @@
             "name": "ecbrates_test",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build_debug_cpu_native/bin/ecbrates_test",
+            "program": "${workspaceFolder}/build_debug_cpu_native/bin/ecb_tests",
             "MIMode": "gdb",
             "cwd": "${workspaceFolder}",
             "setupCommands": [

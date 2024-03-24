@@ -61,4 +61,4 @@ debug:
 .PHONY: tests
 tests:
 	TESTS=ON ${MAKE} debug
-	./build_debug_cpu_native/bin/ecbrates_test
+	./build_debug_cpu_native/bin/ecb_tests
