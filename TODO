@@ -1,1 +1,5 @@
 - use cmake presets
+- github actions for tests
+- target with asan
+- examples of configuration (nginx, cron)
+
