@@ -8,3 +8,4 @@
 - consider removing ECB namespace
 - consider using spdlog
 - extra headers in returning json for better caching
+- update naming convention + checking it via clang-tidy
