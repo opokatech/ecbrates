@@ -19,6 +19,9 @@ namespace ECB
         return m_impl->initialize(ecb, listening_address);
     }
 
+    void Server::SetPrettyJson(bool pretty) { m_impl->set_pretty_json(pretty); }
+    void Server::SetPrecision(uint16_t precision) { m_impl->set_precision(precision); }
+
     void Server::Start() { m_impl->start_polling(); }
 
     void Server::Stop() { m_impl->stop_polling(); }

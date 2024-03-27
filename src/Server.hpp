@@ -23,6 +23,10 @@ namespace ECB
 
         bool Initialize(std::shared_ptr<Rates> ecb, uint16_t port, bool listen_all);
 
+        void SetPrettyJson(bool pretty);
+
+        void SetPrecision(uint16_t precision);
+
         void Start();
 
         void Stop();

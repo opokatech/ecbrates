@@ -3,6 +3,7 @@
 #include "Symbol.hpp"
 
 #include "mongoose.h"
+#include "json/json.h"
 
 #include <memory>
 #include <string>
@@ -20,6 +21,8 @@ namespace ECB
         ~Server_Impl();
 
         bool initialize(std::shared_ptr<Rates> rates, const std::string &listen_address);
+        void set_pretty_json(bool pretty) { m_json_builder["indentation"] = pretty ? "  " : ""; }
+        void set_precision(uint16_t precision) { m_json_builder["precision"] = precision; }
 
         void start_polling();
         void stop_polling() { m_running = false; }
@@ -36,6 +39,7 @@ namespace ECB
         struct mg_connection *m_conn = nullptr;
         bool m_running = false;
         std::shared_ptr<Rates> m_rates;
+        Json::StreamWriterBuilder m_json_builder;
 
         // must be static to be used as a callback for mongoose
         static void handler(mg_connection *connection, int event, void *event_data);

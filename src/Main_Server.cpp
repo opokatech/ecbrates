@@ -37,7 +37,13 @@ int main(int argc, char *argv[])
         return num >= 1 && num <= 65535; // NOLINT
     });
 
+    options.add_optional("precision", "Numerical precision of rates: 1..20", "6", [](const std::string &value) {
+        uint32_t num = Options::as_uint(value);
+        return num >= 1 && num <= 20; // NOLINT
+    });
+
     options.add_flag("listen_all", "Listen on all interfaces");
+    options.add_flag("pretty", "Pretty print JSON output");
     options.add_flag("help", "Show help");
 
     const bool parse_result = options.parse(argc, argv);
@@ -83,10 +89,16 @@ int main(int argc, char *argv[])
     Main_Signals::Setup(); // handling SIGINT and SIGUSR1
 
     const uint16_t port = options.as_uint("port");
+    const uint16_t precision = options.as_uint("precision");
     const bool listen_all = options.as_bool("listen_all");
+    const bool pretty = options.as_bool("pretty");
     cout << "Starting server on port " << port << (listen_all ? " on all interfaces" : " on localhost only") << endl;
+    cout << "Pretty JSON output: " << (pretty ? "yes" : "no") << endl;
+    cout << "Numerical precision: " << precision << endl;
 
     auto &server = ECB::Server::Instance();
+    server.SetPrettyJson(pretty);
+    server.SetPrecision(precision);
 
     if (!server.Initialize(rates, port, listen_all))
     {

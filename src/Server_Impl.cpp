@@ -9,7 +9,12 @@
 
 namespace ECB
 {
-    Server_Impl::Server_Impl() { mg_mgr_init(&m_mgr); }
+    Server_Impl::Server_Impl()
+    {
+        mg_mgr_init(&m_mgr);
+        m_json_builder["indentation"] = "";
+        m_json_builder["precision"] = 6; // default is 17
+    }
 
     Server_Impl::~Server_Impl() { mg_mgr_free(&m_mgr); }
 
@@ -83,10 +88,7 @@ namespace ECB
             }
         }
 
-        std::stringstream ss;
-
-        ss << ans;
-        return ss.str();
+        return Json::writeString(m_json_builder, ans);
     }
 
     std::string Server_Impl::print_error(const std::string &msg) const
@@ -95,10 +97,8 @@ namespace ECB
 
         ans["success"] = false;
         ans["error_text"] = msg;
-        std::stringstream ss;
 
-        ss << ans;
-        return ss.str();
+        return Json::writeString(m_json_builder, ans);
     }
 
     void Server_Impl::handler(mg_connection *connection, int event, void *event_data)
