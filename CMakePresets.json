@@ -1,0 +1,43 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 19,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "default",
+            "hidden": true,
+            "generator": "Ninja"
+        },
+        {
+            "name": "release_native",
+            "inherits": "default",
+            "binaryDir": "${sourceDir}/build_release_cpu_native",
+            "cacheVariables": {
+                "ECB_PARAM_DEBUG": "OFF",
+                "ECB_PARAM_TESTS": "ON"
+            }
+        },
+        {
+            "name": "debug_native",
+            "inherits": "default",
+            "binaryDir": "${sourceDir}/build_debug_cpu_native",
+            "cacheVariables": {
+                "ECB_PARAM_DEBUG": "ON",
+                "ECB_PARAM_TESTS": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "build_debug",
+            "configurePreset": "debug_native"
+        },
+        {
+            "name": "build_release",
+            "configurePreset": "release_native"
+        }
+    ]
+}
