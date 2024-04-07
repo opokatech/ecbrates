@@ -1,0 +1,51 @@
+Checks:          '-checks=-*,bugprone-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,readability-*,
+                  -bugprone-unchecked-optional-access,
+                  -cppcoreguidelines-avoid-c-arrays,
+                  -cppcoreguidelines-avoid-do-while,
+                  -cppcoreguidelines-avoid-magic-numbers,
+                  -cppcoreguidelines-pro-bounds-constant-array-index,
+                  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+                  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+                  -cppcoreguidelines-pro-type-reinterpret-cast,
+                  -cppcoreguidelines-pro-type-union-access,
+                  -cppcoreguidelines-pro-type-vararg,
+                  -modernize-loop-convert,
+                  -modernize-pass-by-value,
+                  -modernize-use-nodiscard,
+                  -modernize-use-trailing-return-type,
+                  -readability-braces-around-statements,
+                  -readability-convert-member-functions-to-static,
+                  -readability-identifier-length,
+                  -readability-else-after-return,
+                  -readability-function-cognitive-complexity,
+                  -readability-function-size,
+                  -readability-magic-numbers,
+                  -readability-named-parameter,
+                  -readability-simplify-boolean-expr,
+                  -readability-uppercase-literal-suffix,
+                  -readability-use-anyofallof'
+
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle: none
+CheckOptions:
+    - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+      value: true
+    - key: modernize-use-override.IgnoreDestructors
+      value: 1
+    - key: readability-identifier-naming.ClassCase
+      value: Camel_Snake_Case
+    - key: readability-identifier-naming.ClassMemberCase
+      value: lower_case
+    - key: readability-identifier-naming.MemberPrefix
+      value: 'm_'
+    - key: readability-identifier-naming.ClassMethodCase
+      value: lower_case
+    - key: readability-identifier-naming.ConstexprVariableCase
+      value: UPPER_CASE
+    - key: readability-identifier-naming.StaticConstantCase
+      value: UPPER_CASE
+    - key: readability-identifier-naming.LocalVariableCase
+      value: lower_case
+...

@@ -1,64 +1,35 @@
 #pragma once
 
 #include <memory>
-#include <string>
 
-#include "mongoose.h"
-#include "json/json.h"
+// forward declarations
+class Rates;
+class Server_Impl;
 
-#include "Symbol.hpp"
-
-// ---------------------------------------------------------------------------------------------------------------------
-
-namespace MO
+// Singleton facade class to handle server requests.
+// The actual implementation is in Server_Impl. This header file does not depend on mongoose.h.
+class Server
 {
-    class Ecb;
-    struct Result;
+public:
+    Server(const Server &) = delete;
+    Server &operator=(const Server &) = delete;
 
-    class Server {
-    public:
-        Server(const Ecb &a_ecb, uint16_t a_port);
+    static Server &instance();
 
-        ~Server() { destroy(); }
+    ~Server();
 
-        /// Stars polling loop.
-        void Start();
+    bool initialize(std::shared_ptr<Rates> ecb, uint16_t port, bool listen_all);
 
-        /// Polling loop will end after calling stop().
-        void Stop() { m_running = false; }
+    void set_pretty_json(bool pretty);
 
-        /// Used to get saved
-        const Ecb &Get_Ecb() const { return m_ecb; }
+    void set_precision(uint16_t precision);
 
-    private:
-        /// Initialize structures, sets server port.
-        void create();
+    void start_polling();
 
-        /// Clean up the server.
-        void destroy();
+    void stop_polling();
 
-        /// Checks if request has format /api/yyyy-mm-dd
-        static bool is_historical_request(const char *);
+private:
+    Server();
 
-        /// Handle requests.
-        static int handler(struct mg_connection *a_conn, enum mg_event a_event);
-
-        /// Handle latest api endpoint.
-        static void handle_latest(struct mg_connection *a_conn, Server &a_server);
-
-        /// Handle historical api endpoint.
-        static void handle_historical(struct mg_connection *a_conn, Server &a_server);
-
-        /// Returns base symbol and list of symbols from query string.
-        static std::tuple<Symbol, Symbols> get_base_and_symbols(struct mg_connection *a_conn);
-
-        /// Outputs result.
-        void print_result(struct mg_connection *a_conn, const Result &);
-
-        const Ecb &m_ecb;
-        std::unique_ptr<Json::StreamWriter> m_json_writer;
-        struct mg_server *m_server = nullptr;
-        uint16_t m_port            = 0;
-        bool m_running             = false;
-    };
-} // namespace MO
+    std::unique_ptr<Server_Impl> m_impl;
+};

@@ -1,75 +1,45 @@
 BUILD_DIR=build
-RELEASE_SUFFIX=_release
-DEBUG_SUFFIX=_debug
-
-ARMCPU ?= none
-TESTS ?= 0
-STATIC ?= 0
 
 MAKEFLAGS+= --no-print-directory
 
-.PHONY:help
 help:
 	@echo "Targets:"
 	@echo ""
-	@echo " release    : compile with optimizations and without debug logging"
-	@echo " debug      : compile without optimizations and with debug logging"
+	@echo " release     : compile with optimizations"
+	@echo " debug       : compile without optimizations"
+	@echo " debug_san   : compile without optimizations and with sanitizers"
+	@echo " debug_run   : run debug version using test data as starting point"
+	@echo " tests       : as debug but with tests"
 	@echo ""
-	@echo "Options:"
-	@echo " ARMCPU : set this for crosscompile for armhf (only). If set it implies STATIC and NO TESTS"
-	@echo "          Needed debian packagees: g++-arm-linux-gnueabihf, libssl-dev:armhf, qemu-user"
-	@echo "          Examples:"
-	@echo "          RaspberryPi3 - cortex-a53"
-	@echo "          BananPiPro   - cortex-a7"
-	@echo " TESTS  : 0|1 build google tests, default 0"
-	@echo " STATIC : 0|1 links statically, default 0"
+	@echo " clean       : removes all ${BUILD_DIR}* directories and compile_commands.json"
+	@echo " clang-format: format all source files"
 
-_build:
-	@if [ ! -d ${BUILD_DIR} ] ; \
-	then \
-		mkdir ${BUILD_DIR}; \
-		cd ${BUILD_DIR}; \
-		if [ "x${ARMCPU}" != "xnone" ]; \
-	    then \
-			cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-			      -DECB_ARMCPU=${ARMCPU} \
-				  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake \
-				  -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-arm \
-				  -DECB_BUILD_TESTS=OFF \
-				  -DECB_STATIC_BUILD=ON \
-				  ..; \
-		else \
-			cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-				  -DECB_BUILD_TESTS=${TESTS} \
-				  -DECB_STATIC_BUILD=${STATIC} \
-				  ..; \
-		fi; \
-		${MAKE}; \
-	else \
-		cd ${BUILD_DIR}; \
-		${MAKE}; \
-	fi
+release:
+	cmake --preset release_native
+	cmake --build --preset release
 
-	@rm -f compile_commands.json
-	@ln -s ${BUILD_DIR}/compile_commands.json
+debug:
+	cmake --preset debug_native_nosan
+	cmake --build --preset debug_nosan
+	rm -f compile_commands.json
+	ln -s ${BUILD_DIR}_debug_cpu_native/compile_commands.json
+
+debug_san:
+	cmake --preset debug_native_san
+	cmake --build --preset debug_san
+	rm -f compile_commands.json
+	ln -s ${BUILD_DIR}_debug_cpu_native/compile_commands.json
+
+debug_run: debug_san
+	./build_debug_cpu_native/bin/ecb_server --xml_file tests/data/hist.xml --port 8080
+
+tests: debug
+	./build_debug_cpu_native/bin/ecb_tests
 
 clean:
 	rm -rf ${BUILD_DIR}* compile_commands.json
 
-ctags:
-	(cd src && ctags -R . ../externals)
-
 clang-format:
 	clang-format -i src/*pp tests/*pp
 
-cleanctags:
-	find -type f -name tags -exec rm -f {} \;
-
-.PHONY:release
-release:
-	${MAKE} BUILD_DIR=${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} BUILD_TYPE=Release _build
-	${MAKE} -C ${BUILD_DIR}${RELEASE_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} strip
-
-.PHONY:debug
-debug:
-	${MAKE} BUILD_DIR=${BUILD_DIR}${DEBUG_SUFFIX}_arm_${ARMCPU}_tests_${TESTS}_static_${STATIC} BUILD_TYPE=Debug _build
+.PHONY: _build clean clang-format release debug tests

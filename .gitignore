@@ -1,3 +1,4 @@
 build_*
 tags
 compile_commands.json
+.cache

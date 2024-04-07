@@ -1,0 +1,39 @@
+{
+    "cSpell.words": [
+        "anyofallof",
+        "armhf",
+        "bugprone",
+        "cppcoreguidelines",
+        "dpkg",
+        "ecbrates",
+        "gesmes",
+        "gnueabihf",
+        "killall",
+        "libcurl",
+        "nodiscard",
+        "nosan",
+        "pugi",
+        "SIGUSR",
+        "spdlog",
+        "Struct",
+        "vararg"
+    ],
+    "files.associations": {
+        ".clang-tidy": "yaml",
+        ".clang-format": "yaml",
+        "iosfwd": "cpp",
+        "string_view": "cpp",
+        "iomanip": "cpp",
+        "any": "cpp",
+        "functional": "cpp",
+        "memory": "cpp",
+        "optional": "cpp",
+        "sstream": "cpp",
+        "*.tcc": "cpp"
+    },
+    "testMate.cpp.test.executables": "build_*/**/*_tests",
+    "cmake.buildDirectory": "${workspaceFolder}/build_debug_cpu_native",
+    "C_Cpp.codeAnalysis.exclude": {
+        "**/build_*/**": true,
+    },
+}
