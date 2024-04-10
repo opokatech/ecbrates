@@ -182,7 +182,7 @@ void Server_Impl::handle(mg_connection *connection, mg_http_message *message)
     else
     {
         mg_http_reply(connection, 404, HEADER_ERROR.data(),
-                      print_error("Record for given time stamp not found").c_str());
+                      print_error("Record for given time stamp with given base not found").c_str());
     }
 }
 

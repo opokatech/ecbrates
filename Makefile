@@ -5,14 +5,15 @@ MAKEFLAGS+= --no-print-directory
 help:
 	@echo "Targets:"
 	@echo ""
-	@echo " release     : compile with optimizations"
-	@echo " debug       : compile without optimizations"
-	@echo " debug_san   : compile without optimizations and with sanitizers"
-	@echo " debug_run   : run debug version using test data as starting point"
-	@echo " tests       : as debug but with tests"
+	@echo " release       : compile with optimizations"
+	@echo " debug         : compile without optimizations"
+	@echo " debug_san     : compile without optimizations and with sanitizers"
+	@echo " debug_run     : run debug version using test data as starting point"
+	@echo " debug_san_run : run debug version using test data as starting point"
+	@echo " tests         : as debug but with tests"
 	@echo ""
-	@echo " clean       : removes all ${BUILD_DIR}* directories and compile_commands.json"
-	@echo " clang-format: format all source files"
+	@echo " clean         : removes all ${BUILD_DIR}* directories and compile_commands.json"
+	@echo " clang-format  : format all source files"
 
 release:
 	cmake --preset release_native
@@ -30,7 +31,10 @@ debug_san:
 	rm -f compile_commands.json
 	ln -s ${BUILD_DIR}_debug_cpu_native/compile_commands.json
 
-debug_run: debug_san
+debug_run: debug
+	./build_debug_cpu_native/bin/ecb_server --xml_file tests/data/hist.xml --port 8080
+
+debug_san_run: debug_san
 	./build_debug_cpu_native/bin/ecb_server --xml_file tests/data/hist.xml --port 8080
 
 tests: debug
