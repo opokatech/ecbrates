@@ -8,6 +8,7 @@ on:
       - src/**
       - tests/**
       - cmake/**
+  workflow_dispatch:
 
 jobs:
   build_tests_and_run:
