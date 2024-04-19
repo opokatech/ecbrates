@@ -1,25 +1,30 @@
-name: Automated tests
+name: Unit tests
 
 on:
   push:
-    branches: [ master, refactor ]
+    branches:
+      - master
+    paths:
+      - src/**
+      - tests/**
+      - cmake/**
 
 jobs:
-  build:
+  build_tests_and_run:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Configure CMake
+    - name: configure
       run: cmake -S ${{github.workspace}}
                  -B ${{github.workspace}}/build
                  -DECB_PARAM_DEBUG=OFF
                  -DECB_PARAM_TESTS=ON
 
-    - name: Build
+    - name: build
       run: cmake --build ${{github.workspace}}/build
 
-    - name: Test
+    - name: run tests
       working-directory: ${{github.workspace}}/build
       run: ctest
