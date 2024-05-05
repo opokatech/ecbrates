@@ -4,7 +4,7 @@ include(FetchContent)
 FetchContent_Declare(
     options
     GIT_REPOSITORY https://github.com/opokatech/options
-    GIT_HASH c5a01ab
+    GIT_TAG v3.0.1
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 message(STATUS "${ColorYellow}Fetching options...${ColorReset}")
