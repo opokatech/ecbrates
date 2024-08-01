@@ -47,7 +47,7 @@ bool Server_Impl::is_historical_request(const mg_str *uri) const
     // uri len is the same as the TEMPLATE
     for (size_t pos = 0; pos < uri->len; ++pos)
     {
-        const char c = uri->ptr[pos];
+        const char c = uri->buf[pos];
 
         // All "X" must be a digit, all other characters must match
         if (TEMPLATE[pos] == 'X')
@@ -109,7 +109,7 @@ std::optional<std::string> Server_Impl::get_param_base(const mg_http_message *me
 
     if (var_base.len > 0)
     {
-        auto base = std::string(var_base.ptr, std::min<size_t>(var_base.len, 3u));
+        auto base = std::string(var_base.buf, std::min<size_t>(var_base.len, 3u));
         return Utils::uppercase(base);
     }
     return {};
@@ -123,7 +123,7 @@ std::vector<std::string> Server_Impl::get_param_symbols(const mg_http_message *m
 
     if (var_symbols.len > 0)
     {
-        auto symbols_str = std::string(var_symbols.ptr, std::min<size_t>(var_symbols.len, MAX_SYMBOLS_LEN));
+        auto symbols_str = std::string(var_symbols.buf, std::min<size_t>(var_symbols.len, MAX_SYMBOLS_LEN));
         Utils::uppercase(symbols_str);
         return Utils::split(symbols_str, ',');
     }
@@ -143,7 +143,7 @@ void Server_Impl::handler(mg_connection *connection, int event, void *event_data
 
 void Server_Impl::handle(mg_connection *connection, mg_http_message *message)
 {
-    const bool is_latest = mg_http_match_uri(message, "/api/latest");
+    const bool is_latest = mg_match(message->uri, mg_str("/api/latest"), nullptr);
     const bool is_historical = (!is_latest && is_historical_request(&message->uri));
 
     if (!is_latest && !is_historical)
@@ -157,7 +157,7 @@ void Server_Impl::handle(mg_connection *connection, mg_http_message *message)
     // get time point. In case of historical request, the time point is in the uri /api/XXXX-XX-XX, so
     // we need to extract it skipping the first 5 characters.
     const std::optional<Time_Point> tp =
-        (is_historical) ? std::make_optional(Time_Point{std::string{message->uri.ptr + 5, message->uri.len - 5}})
+        (is_historical) ? std::make_optional(Time_Point{std::string{message->uri.buf + 5, message->uri.len - 5}})
                         : m_rates->last();
 
     if (!tp.has_value())

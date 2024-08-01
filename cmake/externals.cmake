@@ -55,7 +55,7 @@ message(STATUS "${ColorGreen}jsoncpp ready${ColorReset}")
 FetchContent_Declare(
     mongoose
     GIT_REPOSITORY https://github.com/cesanta/mongoose
-    GIT_TAG 7.13
+    GIT_TAG 7.14
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 message(STATUS "${ColorYellow}Fetching mongoose...${ColorReset}")
@@ -68,7 +68,7 @@ target_include_directories(mongoose PUBLIC ${mongoose_SOURCE_DIR})
 FetchContent_Declare(
     spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG v1.12.0
+    GIT_TAG v1.14.1
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 
@@ -81,7 +81,7 @@ if(ECB_PARAM_TESTS)
     FetchContent_Declare(
         googletest
         GIT_REPOSITORY https://github.com/google/googletest
-        GIT_TAG v1.14.0
+        GIT_TAG v1.15.2
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE)
     message(STATUS "${ColorYellow}Fetching googletest...${ColorReset}")
