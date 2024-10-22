@@ -26,7 +26,7 @@ message(STATUS "${ColorGreen}pugixml ready${ColorReset}")
 FetchContent_Declare(
     cpr
     GIT_REPOSITORY https://github.com/whoshuu/cpr
-    GIT_TAG 1.10.5
+    GIT_TAG 1.11.0
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 set(BUILD_CPR_TESTS OFF CACHE BOOL "")
@@ -40,7 +40,7 @@ message(STATUS "${ColorGreen}cpr ready${ColorReset}")
 FetchContent_Declare(
     jsoncpp
     GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp
-    GIT_TAG 1.9.5
+    GIT_TAG 1.9.6
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 set(JSONCPP_WITH_TESTS OFF CACHE INTERNAL "" FORCE)
@@ -55,7 +55,7 @@ message(STATUS "${ColorGreen}jsoncpp ready${ColorReset}")
 FetchContent_Declare(
     mongoose
     GIT_REPOSITORY https://github.com/cesanta/mongoose
-    GIT_TAG 7.14
+    GIT_TAG 7.15
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 message(STATUS "${ColorYellow}Fetching mongoose...${ColorReset}")
