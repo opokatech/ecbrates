@@ -15,7 +15,7 @@ message(STATUS "${ColorGreen}options ready${ColorReset}")
 FetchContent_Declare(
     pugixml
     GIT_REPOSITORY https://github.com/zeux/pugixml
-    GIT_TAG v1.14
+    GIT_TAG v1.15
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 message(STATUS "${ColorYellow}Fetching pugixml...${ColorReset}")
@@ -26,7 +26,7 @@ message(STATUS "${ColorGreen}pugixml ready${ColorReset}")
 FetchContent_Declare(
     cpr
     GIT_REPOSITORY https://github.com/whoshuu/cpr
-    GIT_TAG 1.11.0
+    GIT_TAG 1.11.1
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 set(BUILD_CPR_TESTS OFF CACHE BOOL "")
@@ -68,7 +68,7 @@ target_include_directories(mongoose PUBLIC ${mongoose_SOURCE_DIR})
 FetchContent_Declare(
     spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG v1.14.1
+    GIT_TAG v1.15.1
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 
@@ -81,7 +81,7 @@ if(ECB_PARAM_TESTS)
     FetchContent_Declare(
         googletest
         GIT_REPOSITORY https://github.com/google/googletest
-        GIT_TAG v1.15.2
+        GIT_TAG v1.16.0
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE)
     message(STATUS "${ColorYellow}Fetching googletest...${ColorReset}")
