@@ -55,7 +55,7 @@ message(STATUS "${ColorGreen}jsoncpp ready${ColorReset}")
 FetchContent_Declare(
     mongoose
     GIT_REPOSITORY https://github.com/cesanta/mongoose
-    GIT_TAG 7.15
+    GIT_TAG 7.16
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE)
 message(STATUS "${ColorYellow}Fetching mongoose...${ColorReset}")
